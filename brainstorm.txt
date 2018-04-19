@@ -1,0 +1,19 @@
+Option 1:
+Assign first house to first battery until capacity of the battery is reached
+
+Option 2:
+Assign randomly, taking max. cap. into account
+
+Option 3:
+Iterate over houses, assign house to closest battery unless max. cap. is reached
+
+Option 4:
+Rank all distances, assign from smallest to largest that are still available
+
+Option 5:
+Rank all houses on their ranges of options(batteries), assign the connection to the best option 
+for that house starting from widest range
+
+
+Another thought:
+Can we make a visualisation of the network (both graphs and spatial?)
