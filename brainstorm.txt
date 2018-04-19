@@ -14,6 +14,8 @@ Option 5:
 Rank all houses on their ranges of options(batteries), assign the connection to the best option 
 for that house starting from widest range
 
+Option 6 (inspired by lecture):
+Start with a certain distribution, switch two houses around if this results in a situation that is closer to optimal
 
 Another thought:
 Can we make a visualisation of the network (both graphs and spatial?)
