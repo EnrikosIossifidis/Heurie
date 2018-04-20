@@ -20,5 +20,3 @@ for n in range(len(batteries)):
 
 # connect and print result
 connect01(batteries, houses, distancetable)
-
-# Hallo
