@@ -5,4 +5,3 @@ class Battery:
         self.maxCapacity = 0.0
         self.curCapacity = 0.0
         self.House = list()
-
