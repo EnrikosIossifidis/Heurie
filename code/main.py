@@ -2,11 +2,12 @@ import csv
 from connect01 import connect01
 
 # load data and connect
-with open('data/wijk2_huizen.csv', 'rb') as f:
+with open('data/wijk2_huizen.csv', 'r') as f:
     reader = csv.reader(f)
+    print(reader)
     houses = list(reader)
 
-with open('data/wijk2_batterijen.csv', 'rb') as f:
+with open('data/wijk2_batterijen.csv', 'r') as f:
     reader = csv.reader(f)
     batteries = list(reader)
 
