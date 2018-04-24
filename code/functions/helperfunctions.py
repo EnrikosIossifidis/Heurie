@@ -12,12 +12,12 @@ def importhouses(housescsv):
     houses = []
     i = 1
     for itemh in itemshouse:
-        house = house()
-        house.idhouse = i
-        house.x = itemh[0] 
-        house.y = itemh[1]
-        house.cap = itemh[2]
-        houses.append(house)
+        home = house()
+        home.idhouse = i
+        home.x = itemh[0] 
+        home.y = itemh[1]
+        home.cap = itemh[2]
+        houses.append(home)
         i = i + 1
     
     return houses
@@ -30,12 +30,12 @@ def importbatteries(batteriescsv):
     batteries = []
     j = 1
     for itemb in itemsbattery:
-        battery = battery()
-        battery.idbattery = j
-        battery.x = itemb[0] 
-        battery.y = itemb[1]
-        battery.maxcapacity = itemb[2]
-        batteries.append(battery)
+        bat = battery()
+        bat.idbattery = j
+        bat.x = itemb[0] 
+        bat.y = itemb[1]
+        bat.maxcapacity = itemb[2]
+        batteries.append(bat)
         j = j + 1
     
     return batteries
