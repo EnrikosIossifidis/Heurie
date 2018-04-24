@@ -1,5 +1,6 @@
 '''Randomly assigns houses to batteries, considering capacity restrictions - returns total cable distance (and which houses are assigned to which battery)'''
 import random
+import sys
 
 def runrandom(batteries, houses, dt):
 
@@ -25,8 +26,11 @@ def runrandom(batteries, houses, dt):
     return cost
 
 def assignToRandomBattery(batIndexes, batteries, house):
-    batIndex = random.choice(batIndexes)
-
+    try:
+        batIndex = random.choice(batIndexes)
+    except IndexError:
+        return 0
+        
     # if the capacity has enough room, assign house to battery 
     if (batteries[batIndex].curcapacity + house.cap)<=batteries[batIndex].maxcapacity:
         batteries[batIndex].house.append(house)
@@ -34,7 +38,7 @@ def assignToRandomBattery(batIndexes, batteries, house):
         return
     # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
     else:
-        #batIndexes.remove(batIndex); 
+        batIndexes.remove(batIndex); 
         assignToRandomBattery(batIndexes, batteries, house)
 
 def calculateCost(batteries, dt):

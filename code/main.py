@@ -13,11 +13,6 @@ batteries = importbatteries(r"..\data\wijk1_batterijen.csv")
 
 dt = makedistancetable(batteries, houses)
 
-# would be nice to do this like a hundred times
-print("costs:")
 print(runrandom(batteries, houses, dt))
-
-   
-
-
-    
+print(runrandom(batteries, houses, dt))
+print(runrandom(batteries, houses, dt))
