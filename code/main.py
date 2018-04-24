@@ -1,12 +1,13 @@
 import csv
 import os
-from Functions.distanceTable import makeDistanceTable
-from Functions.helperfunctions import importHouses
-from Functions.helperfunctions import importBatteries
-from classes.Battery import Battery
-from classes.House import House
+from functions.distanceTable import makedistancetable
+from functions.helperfunctions import importhouses
+from functions.helperfunctions import importbatteries
+from classes.battery import battery
+from classes.house import house
 
-houses = importHouses(r"C:\Users\enrik\Documents\GitHub\Heurie\data\wijk3_huizen.csv")
-batteries = importBatteries(r"C:\Users\enrik\Documents\GitHub\Heurie\data\wijk3_batterijen.csv")
-dt = makeDistanceTable(batteries, houses)
-print(dt)
+houses = importhouses(r"..\data\wijk2_huizen.csv")
+batteries = importbatteries(r"..\data\wijk2_batterijen.csv")
+
+makedistancetable(batteries, houses)
+
