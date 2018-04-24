@@ -1,6 +1,6 @@
-class House:
+class house:
     def __init__(self):
-        self.idHouse = 0
+        self.idhouse = 0
         self.x = 0 
         self.y = 0
         self.cap = 0.0

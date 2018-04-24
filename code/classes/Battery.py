@@ -1,10 +1,10 @@
-class Battery:
+class battery:
     def __init__(self):
-        self.idBattery = 0
+        self.idbattery = 0
         self.x = 0
         self.y = 0
-        self.maxCapacity = 0.0
-        self.curCapacity = 0.0
-        self.House = list()
+        self.maxcapacity = 0.0
+        self.curcapacity = 0.0
+        self.house = list()
 
         

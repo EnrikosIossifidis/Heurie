@@ -1,40 +1,40 @@
 import os
 import csv
-from classes.Battery import Battery
-from classes.House import House
+from classes.battery import battery
+from classes.house import house
 
-def importHouses(housesCsv):
+def importhouses(housescsv):
     # load data and connect
-    with open(housesCsv, 'r') as f:
+    with open(housescsv, 'r') as f:
         reader = csv.reader(f)
-        itemsHouse = list(reader)
+        itemshouse = list(reader)
 
     houses = []
     i = 1
-    for itemH in itemsHouse:
-        house = House()
-        house.idHouse = i
-        house.x = itemH[0] 
-        house.y = itemH[1]
-        house.cap = itemH[2]
+    for itemh in itemshouse:
+        house = house()
+        house.idhouse = i
+        house.x = itemh[0] 
+        house.y = itemh[1]
+        house.cap = itemh[2]
         houses.append(house)
         i = i + 1
     
     return houses
     
-def importBatteries(batteriesCsv):
-    with open(batteriesCsv, 'r') as f:
+def importbatteries(batteriescsv):
+    with open(batteriescsv, 'r') as f:
         reader = csv.reader(f)
-        itemsBattery = list(reader)
+        itemsbattery = list(reader)
     
     batteries = []
     j = 1
-    for itemB in itemsBattery:
-        battery = Battery()
-        battery.idBattery = j
-        battery.x = itemB[0] 
-        battery.y = itemB[1]
-        battery.maxCapacity = itemB[2]
+    for itemb in itemsbattery:
+        battery = battery()
+        battery.idbattery = j
+        battery.x = itemb[0] 
+        battery.y = itemb[1]
+        battery.maxcapacity = itemb[2]
         batteries.append(battery)
         j = j + 1
     

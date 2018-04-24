@@ -1,13 +1,13 @@
 import csv
 import numpy as np 
 
-def makeDistanceTable(batteries, houses):
-    distanceTable = np.array(range(len(batteries) + 1))
+def makedistancetable(batteries, houses):
+    distancetable = np.array(range(len(batteries) + 1))
     for house in houses:
-        row = [house.idHouse]
+        row = [house.idhouse]
         for bat in batteries:
             row.append(abs((int(house.x)-int(bat.x)))+abs((int(house.y)-int(bat.y))))
         np.asarray(row)
-        distanceTable = np.vstack([distanceTable, row])
-    print(distanceTable)
+        distancetable = np.vstack([distancetable, row])
+    print(distancetable)
     
