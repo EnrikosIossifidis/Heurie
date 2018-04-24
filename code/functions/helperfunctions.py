@@ -9,33 +9,25 @@ def importHouses(housesCsv):
         reader = csv.reader(f)
         itemsHouse = list(reader)
 
-    houses = []
+    houseObjectList = []
     i = 1
     for itemH in itemsHouse:
-        house = House()
-        house.idHouse = i
-        house.x = itemH[0] 
-        house.y = itemH[1]
-        house.cap = itemH[2]
-        houses.append(house)
-        i = i + 1
+        house = House(i, int(itemH[0]), int(itemH[1]), float(itemH[2]))
+        houseObjectList.append(house)
+        i += 1
     
-    return houses
+    return houseObjectList
     
 def importBatteries(batteriesCsv):
     with open(batteriesCsv, 'r') as f:
         reader = csv.reader(f)
         itemsBattery = list(reader)
     
-    batteries = []
-    j = 1
+    batObjectList = []
+    i = 1
     for itemB in itemsBattery:
-        battery = Battery()
-        battery.idBattery = j
-        battery.x = itemB[0] 
-        battery.y = itemB[1]
-        battery.maxCapacity = itemB[2]
-        batteries.append(battery)
-        j = j + 1
+        battery = Battery(i, int(itemB[0]), int(itemB[1]), float(itemB[2]))
+        batObjectList.append(battery)
+        i += 1
     
-    return batteries
+    return batObjectList

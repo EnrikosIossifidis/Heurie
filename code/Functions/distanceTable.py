@@ -6,9 +6,7 @@ def makeDistanceTable(batteries, houses):
     for house in houses:
         row = [house.idHouse]
         for bat in batteries:
-            print(type(house.x))
-            print(bat.x)
-            row.append(abs((int(house.x)-int(bat.x)))+abs((int(house.y)-int(bat.y))))
+            row.append(abs(house.x-bat.x)+abs(house.y-bat.y))
         np.asarray(row)
         distanceTable = np.vstack([distanceTable, row])
     return distanceTable

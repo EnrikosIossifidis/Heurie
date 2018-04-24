@@ -1,9 +1,9 @@
 class Battery:
-    def __init__(self):
-        self.idBattery = 0
-        self.x = 0
-        self.y = 0
-        self.maxCapacity = 0.0
+    def __init__(self, id, xCoor, yCoor, maxCap):
+        self.idBattery = id
+        self.x = xCoor
+        self.y = yCoor
+        self.maxCapacity = maxCap
         self.curCapacity = 0.0
         self.House = list()
 
