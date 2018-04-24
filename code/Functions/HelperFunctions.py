@@ -1,20 +1,21 @@
 import csv
-from classes import House
+#from classes import House
 
-# TODO: begin gemaakt, moet nog inkomen met de syntax. Return list of houses and batteries
-class ImportHouses
+def ImportHouses(housesCsv):
     # load data and connect
-    with open('data/wijk2_huizen.csv', 'rb') as f:
+    houseCsvPath = 'data/wijk2_huizen.csv'
+    with open(houseCsvPath, 'r') as f:
         reader = csv.reader(f)
         items = list(reader)
-        houses = []
+        print(items)
+#        houses = []
 
-        for item in items:
-        
-            houses.append(house)    
+        # for item in items:
+            
+            # houses.append()    
         
     
-class ImportBatteries
+def ImportBatteries():
     with open('data/wijk2_batterijen.csv', 'rb') as f:
         reader = csv.reader(f)
         # batteries = list(reader)
