@@ -1,6 +1,6 @@
 import csv
 import os
-from functions.distanceTable import makedistancetable
+from functions.distancetable import makedistancetable
 from functions.helperfunctions import importhouses
 from functions.helperfunctions import importbatteries
 from classes.battery import battery
