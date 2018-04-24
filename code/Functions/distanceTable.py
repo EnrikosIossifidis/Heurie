@@ -10,11 +10,6 @@ def makedistancetable(batteries, houses):
             print(bat.x)
             row.append(abs((int(house.x)-int(bat.x)))+abs((int(house.y)-int(bat.y))))
         np.asarray(row)
-<<<<<<< HEAD
         distancetable = np.vstack([distancetable, row])
-    print(distancetable)
+    return(distancetable)
     
-=======
-        distanceTable = np.vstack([distanceTable, row])
-    return distanceTable
->>>>>>> 0e6b5cee310735465518c97c2817b4b641b64005
