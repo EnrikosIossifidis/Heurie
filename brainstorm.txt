@@ -25,3 +25,5 @@ Heuristieken dropbox(https://www.dropbox.com/sh/5a61pgl1h1uy0iv/AABfjUcLss7Z3Qhw
 
 Hitchhikers guide to Python (http://docs.python-guide.org/en/latest/)
 NumPy (http://www.numpy.org/)
+
+Matplotlib Python - scatterplot

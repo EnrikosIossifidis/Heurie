@@ -1,23 +1,23 @@
 import csv
-from connect01 import connect01
+import os
+from Functions.distanceTable import makeDistanceTable
+from classes.Battery import Battery
+from classes.House import House
 
 # load data and connect
-with open('data/wijk2_huizen.csv', 'r') as f:
-    reader = csv.reader(f)
-    print(reader)
-    houses = list(reader)
+house_list = []
+house_file = House()
+house_file.idHouse = 5
+house_file.x = 22
+house_file.y = 11
+house_list.append(house_file)
 
-with open('data/wijk2_batterijen.csv', 'r') as f:
-    reader = csv.reader(f)
-    batteries = list(reader)
+bat_list = []
+for i in range(5):
+    battery_file = Battery()
+    battery_file.x = i
+    battery_file.y = i
+    bat_list.append(battery_file)
 
-# create a table with the distance from every house to every battery
-# result: distancetable[n][h] - n=battery, h=house
-distancetable = [0]*len(batteries)
-for n in range(len(batteries)):
-    distancetable[n] = list()
-    for i in range(len(houses)):
-        distancetable[n].append(abs((int(houses[i][0])-int(batteries[n][0])))+abs((int(houses[i][1])-int(batteries[n][1]))))
+makeDistanceTable(bat_list, house_list)
 
-# connect and print result
-connect01(batteries, houses, distancetable)

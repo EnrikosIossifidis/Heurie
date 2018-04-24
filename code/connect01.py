@@ -1,5 +1,8 @@
+import csv
+
 '''Connect houses to batteries in most basic way - returns total cable distance and capacity distribution (and which houses are assigned to which battery)'''
-def connect01(batteries, houses, distancetable):
+def connect01(batteries, houses):
+
     # performance indicators are capacity distribution and cable distance
     cap_fill = [0]*len(batteries)
     dist_fill = [0]*len(batteries)
