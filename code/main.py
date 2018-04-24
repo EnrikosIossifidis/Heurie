@@ -8,8 +8,8 @@ from classes.battery import Battery
 from classes.house import House
 
 
-houses = importhouses(r"..\data\wijk2_huizen.csv")
-batteries = importbatteries(r"..\data\wijk2_batterijen.csv")
+houses = importhouses(r"..\data\wijk1_huizen.csv")
+batteries = importbatteries(r"..\data\wijk1_batterijen.csv")
 
 dt = makedistancetable(batteries, houses)
 

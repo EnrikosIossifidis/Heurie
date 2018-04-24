@@ -5,13 +5,14 @@ def runrandom(batteries, houses, dt):
 
     # assign every house to a random battery of which the capacity is still sufficient
     for house in houses:
-        assignToRandomBattery(batteries, house)
+        batIndexes = [0,1,2,3,4]
+        assignToRandomBattery(batIndexes, batteries, house)
 
     # calculate the costs of this option
     cost = calculateCost(batteries, dt)
 
     # just some prints that are handy for now
-    
+
     # for battery in batteries:
     #     for housesAssign in battery.house:
     #         print("Battery, house: ")
@@ -23,18 +24,18 @@ def runrandom(batteries, houses, dt):
 
     return cost
 
-def assignToRandomBattery(batteries, house):
-    # choose a random battery
-    batIndex = random.randint(0,len(batteries)-1)
-    
+def assignToRandomBattery(batIndexes, batteries, house):
+    batIndex = random.choice(batIndexes)
+
     # if the capacity has enough room, assign house to battery 
     if (batteries[batIndex].curcapacity + house.cap)<=batteries[batIndex].maxcapacity:
         batteries[batIndex].house.append(house)
         batteries[batIndex].curcapacity += house.cap
         return
     # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
-    else: 
-        assignToRandomBattery(batteries, house)
+    else:
+        #batIndexes.remove(batIndex); 
+        assignToRandomBattery(batIndexes, batteries, house)
 
 def calculateCost(batteries, dt):
     cost = 0 
