@@ -6,5 +6,3 @@ class Battery:
         self.maxCapacity = batCap
         self.curCapacity = 0.0
         self.house = list()
-
-        
