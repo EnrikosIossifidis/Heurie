@@ -3,9 +3,9 @@ import csv
 from classes.battery import Battery
 from classes.house import House
 
-def importhouses(housescsv):
+def importHouses(housesCsv):
     # load data and connect
-    with open(housescsv, 'r') as f:
+    with open(housesCsv, 'r') as f:
         reader = csv.reader(f)
         itemsHouse = list(reader)
 
@@ -18,8 +18,8 @@ def importhouses(housescsv):
 
     return houseObjectList
     
-def importbatteries(batteriescsv):
-    with open(batteriescsv, 'r') as f:
+def importBatteries(batteriesCsv):
+    with open(batteriesCsv, 'r') as f:
         reader = csv.reader(f)
         itemsBattery = list(reader)
     

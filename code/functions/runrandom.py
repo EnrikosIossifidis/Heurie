@@ -2,7 +2,7 @@
 import random
 import sys
 
-def runrandom(batteries, houses, dt):
+def runRandom(batteries, houses, dt):
 
     # assign every house to a random battery of which the capacity is still sufficient
     for house in houses:
@@ -28,18 +28,18 @@ def runrandom(batteries, houses, dt):
 
 
 def assignToRandomBattery(batIndexes, batteries, house):
-    securerandom = random.Random()
+    secureRandom = random.Random()
     try:
-        batIndex = securerandom.choice(batIndexes)
+        batIndex = secureRandom.choice(batIndexes)
         print(batIndex)
     except IndexError:
         return 0
         
     # if the capacity has enough room, assign house to battery 
-    if (batteries[batIndex].curcapacity + house.cap)<=batteries[batIndex].maxcapacity:
+    if (batteries[batIndex].curCapacity + house.cap)<=batteries[batIndex].maxCapacity:
         batteries[batIndex].house.append(house)
-        house.batterij = batteries[batIndex].idBattery
-        batteries[batIndex].curcapacity += house.cap
+        house.battery = batteries[batIndex].idBattery
+        batteries[batIndex].curCapacity += house.cap
     # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
     else:
         batIndexes.remove(batIndex) 

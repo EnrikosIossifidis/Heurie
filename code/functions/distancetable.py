@@ -1,7 +1,7 @@
 import csv
 import numpy as np 
 
-def makedistancetable(batteries, houses):
+def makeDistanceTable(batteries, houses):
     distancetable = np.array(range(len(batteries) + 1))
     for house in houses:
         row = [house.idHouse]

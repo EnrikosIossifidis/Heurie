@@ -4,4 +4,4 @@ class House:
         self.x = xCoor
         self.y = yCoor
         self.cap = houseCap
-        self.batterij = 0.0
+        self.battery = 0.0
