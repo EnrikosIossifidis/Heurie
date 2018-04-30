@@ -19,23 +19,26 @@ def runrandom(batteries, houses, dt):
     #         print("Battery, house: ")
     #         print(battery.idBattery, housesAssign.idHouse)
     
-    for battery in batteries:
-        print("battery.maxcapacity, battery.curcapacity, amount of houses per battery") 
-        print(battery.maxcapacity, battery.curcapacity, len(battery.house)) 
+    # for battery in batteries:
+    #     print("battery.maxcapacity, battery.curcapacity, amount of houses per battery") 
+    #     print(battery.maxcapacity, battery.curcapacity, len(battery.house)) 
 
     return cost
 
 def assignToRandomBattery(batIndexes, batteries, house):
+    securerandom = random.SystemRandom()
     try:
-        batIndex = random.choice(batIndexes)
+        batIndex = securerandom.choice(batIndexes)
+        # print(batIndex)
     except IndexError:
         return 0
         
     # if the capacity has enough room, assign house to battery 
     if (batteries[batIndex].curcapacity + house.cap)<=batteries[batIndex].maxcapacity:
         batteries[batIndex].house.append(house)
+        house.batterij = batteries[batIndex].idBattery
         batteries[batIndex].curcapacity += house.cap
-        return
+        return 
     # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
     else:
         batIndexes.remove(batIndex); 
