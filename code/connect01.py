@@ -1,7 +1,8 @@
 import csv
+import numpy as np
 
 '''Connect houses to batteries in most basic way - returns total cable distance and capacity distribution (and which houses are assigned to which battery)'''
-def connect01(batteries, houses):
+def connect01(batteries, houses, distancetable):
 
     # performance indicators are capacity distribution and cable distance
     cap_fill = [0]*len(batteries)
@@ -11,7 +12,7 @@ def connect01(batteries, houses):
     to_house = [0]*len(batteries)
     h_save = 0
 
-    for n in range(len(batteries)):
+    for n in range(1, (len(batteries) + 1):
         for h in range(h_save, len(houses)):
             if cap_fill[n] < float(batteries[n][2])-float(houses[h][2]):
                 cap_fill[n] += float(houses[h][2])

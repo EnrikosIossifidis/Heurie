@@ -12,3 +12,4 @@ batteries = importbatteries(r"..\data\wijk2_batterijen.csv")
 dt = makedistancetable(batteries, houses)
 print(dt)
 
+connect01(batteries, houses, dt)
