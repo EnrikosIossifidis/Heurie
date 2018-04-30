@@ -14,6 +14,8 @@ batteries = importbatteries(r"..\data\wijk3_batterijen.csv")
 
 dt = makedistancetable(batteries, houses)
 
-runrandom(batteries, houses, dt)
+for i in range (0,2):
+    result = runrandom(batteries, houses, dt)
+    print(result['cost'])
 
-visvillage(batteries, houses)
+visvillage(result['batteries'], result['houses'])
