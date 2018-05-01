@@ -3,19 +3,19 @@ import random
 import sys
 from classes.model import Model
 
-def runRandom(batteries, houses, dt):
+def runRandom(env, dt):
     
     modelBatteries = []
-    for i in range (0,len(batteries)):
+    for i in range (0,len(env.batteries)):
         battery = Model.Battery(i+1)
         modelBatteries.append(battery)
 
     # assign every house to a random battery of which the capacity is still sufficient
-    for house in houses:
+    for house in env.houses:
         batIndexes = list()
-        for i in range(0,len(batteries)):
+        for i in range(0,len(env.batteries)):
             batIndexes.append(i)
-        assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
+        assignToRandomBattery(batIndexes, env.batteries, house, modelBatteries)
 
     # calculate the costs of this option
     cost = calculateCost(modelBatteries, dt)

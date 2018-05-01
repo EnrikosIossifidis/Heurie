@@ -12,3 +12,6 @@ class Environment:
             self.x = xCoor
             self.y = yCoor
             self.cap = houseCap
+    def __init__(self, houses, batteries):
+        self.batteries = batteries
+        self.houses = houses
