@@ -5,17 +5,17 @@ from functions.runrandom import runRandom
 from functions.visualisation import visVillage
 from functions.helperfunctions import importHouses
 from functions.helperfunctions import importBatteries
-from classes.battery import Battery
-from classes.house import House
+from classes.model import Model
+from classes.environment import Environment
 
 houses = importHouses(r"..\data\wijk3_huizen.csv")
 batteries = importBatteries(r"..\data\wijk3_batterijen.csv")
+env = Environment(houses, batteries)
 
-dt = makeDistanceTable(batteries, houses)
-
+dt = makeDistanceTable(env)
 
 for i in range (0,2):
-    result = runRandom(batteries, houses, dt)
-    print(result['cost'])
+    model = runRandom(env, dt)
+    print(model.cost)
+    visVillage(env, model)
 
-visVillage(result['batteries'], result['houses'])
