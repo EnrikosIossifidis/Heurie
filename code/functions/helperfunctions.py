@@ -1,7 +1,6 @@
 import os
 import csv
-from classes.battery import Battery
-from classes.house import House
+from classes.environment import Environment
 
 def importHouses(housesCsv):
     # load data and connect
@@ -12,7 +11,7 @@ def importHouses(housesCsv):
     houseObjectList = []
     i = 1
     for itemH in itemsHouse:
-        house = House(i, int(itemH[0]), int(itemH[1]), float(itemH[2]))
+        house = Environment.House(i, int(itemH[0]), int(itemH[1]), float(itemH[2]))
         houseObjectList.append(house)
         i += 1
 
@@ -26,7 +25,7 @@ def importBatteries(batteriesCsv):
     batObjectList = []
     i = 1
     for itemB in itemsBattery:
-        battery = Battery(i, int(itemB[0]), int(itemB[1]), float(itemB[2]))
+        battery = Environment.Battery(i, int(itemB[0]), int(itemB[1]), float(itemB[2]))
         batObjectList.append(battery)
         i += 1
     

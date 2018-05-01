@@ -1,18 +1,23 @@
 '''Randomly assigns houses to batteries, considering capacity restrictions - returns total cable distance (and which houses are assigned to which battery)'''
 import random
 import sys
+from classes.model import Model
 
 def runRandom(batteries, houses, dt):
-
+    
+    modelBatteries = []
     # assign every house to a random battery of which the capacity is still sufficient
     for house in houses:
         batIndexes = list()
         for i in range(0,len(batteries)):
             batIndexes.append(i)
-        assignToRandomBattery(batIndexes, batteries, house)
+            battery = Model.Battery(i+1)
+            print(battery.idBattery)
+            modelBatteries.append(battery)
+        assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
 
     # calculate the costs of this option
-    cost = calculateCost(batteries, dt)
+    cost = calculateCost(modelBatteries, dt)
 
     # just some prints that are handy for now
 
@@ -27,28 +32,27 @@ def runRandom(batteries, houses, dt):
     return {'cost': cost, 'batteries': batteries, 'houses': houses, 'dt': dt}
 
 
-def assignToRandomBattery(batIndexes, batteries, house):
+def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
     secureRandom = random.Random()
     try:
         batIndex = secureRandom.choice(batIndexes)
-        print(batIndex)
+        # print(batIndex)
     except IndexError:
         return 0
         
     # if the capacity has enough room, assign house to battery 
-    if (batteries[batIndex].curCapacity + house.cap)<=batteries[batIndex].maxCapacity:
-        batteries[batIndex].house.append(house)
-        house.battery = batteries[batIndex].idBattery
-        batteries[batIndex].curCapacity += house.cap
+    if (modelBatteries[batIndex].curCapacity + house.cap)<=batteries[batIndex].maxCapacity:
+        modelBatteries[batIndex].houses.append(house)
+        modelBatteries[batIndex].curCapacity += house.cap
     # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
     else:
         batIndexes.remove(batIndex) 
-        assignToRandomBattery(batIndexes, batteries, house)
+        assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
 
 def calculateCost(batteries, dt):
     cost = 0
     for battery in batteries:
-        for house in battery.house:
+        for house in battery.houses:
             cost += dt[house.idHouse][battery.idBattery]
     return cost
 
