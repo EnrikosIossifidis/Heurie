@@ -6,19 +6,21 @@ from classes.model import Model
 def runRandom(batteries, houses, dt):
     
     modelBatteries = []
+    for i in range (0,len(batteries)):
+        battery = Model.Battery(i+1)
+        modelBatteries.append(battery)
+
     # assign every house to a random battery of which the capacity is still sufficient
     for house in houses:
         batIndexes = list()
         for i in range(0,len(batteries)):
             batIndexes.append(i)
-            battery = Model.Battery(i+1)
-            print(battery.idBattery)
-            modelBatteries.append(battery)
         assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
 
     # calculate the costs of this option
     cost = calculateCost(modelBatteries, dt)
 
+    model = Model(cost, modelBatteries)
     # just some prints that are handy for now
 
     # for battery in batteries:
@@ -29,7 +31,7 @@ def runRandom(batteries, houses, dt):
     # for battery in batteries:
     #     print("battery.maxcapacity, battery.curcapacity, amount of houses per battery") 
     #     print(battery.maxcapacity, battery.curcapacity, len(battery.house)) 
-    return {'cost': cost, 'batteries': batteries, 'houses': houses, 'dt': dt}
+    return model
 
 
 def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
