@@ -6,6 +6,8 @@ from classes.model import Model
 def runRandom(env, dt):
     
     modelBatteries = []
+
+    # create the array of batteries with the id starting at 1
     for i in range (0,len(env.batteries)):
         battery = Model.Battery(i+1)
         modelBatteries.append(battery)
@@ -20,25 +22,17 @@ def runRandom(env, dt):
     # calculate the costs of this option
     cost = calculateCost(modelBatteries, dt)
 
+    # assign all the values into a model
     model = Model(cost, modelBatteries)
-    # just some prints that are handy for now
 
-    # for battery in batteries:
-    #     for housesAssign in battery.house:
-    #         print("Battery, house: ")
-    #         print(battery.idBattery, housesAssign.idHouse)
-    
-    # for battery in batteries:
-    #     print("battery.maxcapacity, battery.curcapacity, amount of houses per battery") 
-    #     print(battery.maxcapacity, battery.curcapacity, len(battery.house)) 
     return model
 
 
 def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
+
     secureRandom = random.Random()
     try:
         batIndex = secureRandom.choice(batIndexes)
-        # print(batIndex)
     except IndexError:
         return 0
         
@@ -46,15 +40,24 @@ def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
     if (modelBatteries[batIndex].curCapacity + house.cap)<=batteries[batIndex].maxCapacity:
         modelBatteries[batIndex].houses.append(house)
         modelBatteries[batIndex].curCapacity += house.cap
+
     # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
     else:
         batIndexes.remove(batIndex) 
         assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
 
 def calculateCost(batteries, dt):
+
+    # make sure the cost and length are starting with 0
     cost = 0
+    length = 0
+
+    # calculate the length of the cables
     for battery in batteries:
         for house in battery.houses:
-            cost += dt[house.idHouse][battery.idBattery]
+            length += dt[house.idHouse][battery.idBattery]
+    
+    # calculate cost of the cables
+    cost = length * 9
     return cost
 
