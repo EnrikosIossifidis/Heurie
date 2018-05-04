@@ -9,3 +9,7 @@ class Model:
     def __init__(self, cost, mBatteries):
         self.cost = cost
         self.modelBatteries = mBatteries
+        self.name = ""
+
+    def setName(self, id):
+        self.name = "model " + str(id+1)

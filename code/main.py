@@ -1,6 +1,6 @@
 import csv
 import os
-from functions.distancetable import makeDistanceTable
+from functions.distanceTable import makeDistanceTable
 from functions.runrandom import runRandom
 from functions.visualisation import visVillage
 from functions.helperfunctions import importHouses
@@ -16,6 +16,8 @@ dt = makeDistanceTable(env)
 
 for i in range (0,2):
     model = runRandom(env, dt)
-    print(model.cost)
+    model.setName(i)
+
+    print("cost of " + model.name + " = " + str(model.cost))
     visVillage(env, model)
 
