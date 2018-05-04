@@ -17,7 +17,7 @@ dt = makeDistanceTable(env)
 for i in range (0,2):
     model = runRandom(env, dt)
     model.setName(i)
+    model.printResult()
 
-    print("cost of " + model.name + " = " + str(model.cost))
     visVillage(env, model)
 

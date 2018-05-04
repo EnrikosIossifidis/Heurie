@@ -13,3 +13,6 @@ class Model:
 
     def setName(self, id):
         self.name = "model " + str(id+1)
+
+    def printResult(self):
+        print("cost of " + self.name + " = " + str(self.cost))
