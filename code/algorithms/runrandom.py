@@ -3,7 +3,7 @@ import random
 import sys
 from classes.model import Model
 
-def runRandom(env, dt):
+def runRandom(env):
     
     modelBatteries = []
 
@@ -24,7 +24,7 @@ def runRandom(env, dt):
 
     # assign all the values into a model
     model = Model(modelBatteries)
-    model.CalculateCosts(dt)
+    model.CalculateCosts(env.distanceTable)
 
     return model
 
@@ -46,19 +46,4 @@ def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
     else:
         batIndexes.remove(batIndex) 
         assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
-
-def calculateCost(batteries, dt):
-
-    # make sure the cost and length are starting with 0
-    cost = 0
-    length = 0
-
-    # calculate the length of the cables
-    for battery in batteries:
-        for house in battery.houses:
-            length += dt[house.idHouse][battery.idBattery]
-    
-    # calculate cost of the cables
-    cost = length * 9
-    return cost
 
