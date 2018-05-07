@@ -103,6 +103,8 @@ def visVillage(env, model):
     plt.scatter(arrayBatteryX, arrayBatteryY, marker='8', c=arrayBatteryZ)
     plt.scatter(arrayHouseX, arrayHouseY, marker='2', c=arrayHouseZ)
     plt.axis()
-    plt.show()
 
-    plt.savefig(model.name, bbox_inches="tight")    
+    # save the model into a png file in the results map
+    name = model.name + ".png"
+    plt.savefig('../results/' + name)
+

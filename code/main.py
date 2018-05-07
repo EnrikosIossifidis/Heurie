@@ -1,7 +1,7 @@
 import csv
 import os
-from functions.distancetable import makeDistanceTable
-from functions.runrandom import runRandom
+from functions.distanceTable import makeDistanceTable
+from algorithms.runrandom import runRandom
 from functions.visualisation import visVillage
 from functions.helperfunctions import importHouses
 from functions.helperfunctions import importBatteries
@@ -16,6 +16,8 @@ dt = makeDistanceTable(env)
 
 for i in range (0,2):
     model = runRandom(env, dt)
-    print(model.cost)
+    model.setName("random", i)
+    model.printResult()
+
     visVillage(env, model)
 
