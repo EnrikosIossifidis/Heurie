@@ -1,14 +1,11 @@
 import csv
 import os
-# from functions.distancetable import makeDistanceTable
 from algorithms.runrandom import runRandom
 from functions.visualisation import visVillage
 from classes.model import Model
 from classes.environment import Environment
 
 env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv")
-
-# dt = makeDistanceTable(env)
 
 for i in range (0,2):
     model = runRandom(env)
