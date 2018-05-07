@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 
-
 def visVillage(env, model):
-    
      # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (255, 127, 14), (255, 187, 120),    
               (152, 223, 138), (214, 39, 40), (255, 152, 150),    
@@ -38,42 +36,33 @@ def visVillage(env, model):
             arrayHouseY.append(item.y)
             arrayZ.append(battery.idBattery)
             
-            if battery.idBattery==1:
-                plt.plot([item.x, env.batteries[0].x], [item.y, env.batteries[0].y], linewidth = 0.7, c=arrayBatteryZ[0], alpha=0.5)
-            elif battery.idBattery==2:
-                plt.plot([item.x, env.batteries[1].x], [item.y, env.batteries[1].y], linewidth = 0.7, c=arrayBatteryZ[1], alpha=0.5)
-            elif battery.idBattery==3:
-                plt.plot([item.x, env.batteries[2].x], [item.y, env.batteries[2].y], linewidth = 0.7, c=arrayBatteryZ[2], alpha=0.5)
-            elif battery.idBattery==4:
-                plt.plot([item.x, env.batteries[3].x], [item.y, env.batteries[3].y], linewidth = 0.7, c=arrayBatteryZ[3], alpha=0.5)
-            elif battery.idBattery==5:
-                plt.plot([item.x, env.batteries[4].x], [item.y, env.batteries[4].y], linewidth = 0.7, c=arrayBatteryZ[4], alpha=0.5)
+            # if battery.idBattery==1:
+            #     plt.plot([item.x, env.batteries[0].x], [item.y, env.batteries[0].y], linewidth = 0.7, c=arrayBatteryZ[0], alpha=0.5)
+            # elif battery.idBattery==2:
+            #     plt.plot([item.x, env.batteries[1].x], [item.y, env.batteries[1].y], linewidth = 0.7, c=arrayBatteryZ[1], alpha=0.5)
+            # elif battery.idBattery==3:
+            #     plt.plot([item.x, env.batteries[2].x], [item.y, env.batteries[2].y], linewidth = 0.7, c=arrayBatteryZ[2], alpha=0.5)
+            # elif battery.idBattery==4:
+            #     plt.plot([item.x, env.batteries[3].x], [item.y, env.batteries[3].y], linewidth = 0.7, c=arrayBatteryZ[3], alpha=0.5)
+            # elif battery.idBattery==5:
+            #     plt.plot([item.x, env.batteries[4].x], [item.y, env.batteries[4].y], linewidth = 0.7, c=arrayBatteryZ[4], alpha=0.5)
 
             
             # # Actual cables over grid
             # if battery.idBattery==1:
-            #     plt.plot([item.x, item.x, env.batteries[0].x], [item.y, env.batteries[0].y, env.batteries[0].y], linewidth = 0.7, c=arrayBatteryZ[0], alpha=0.5)
+            #     plt.plot([item.x, item.x, env.batteries[0].x], [item.y, env.batteries[0].y, env.batteries[0].y], linewidth = 0.5, c=arrayBatteryZ[0], alpha=0.5)
             # elif battery.idBattery==2:
-            #     plt.plot([item.x, item.x, env.batteries[1].x], [item.y, env.batteries[1].y, env.batteries[1].y], linewidth = 0.7, c=arrayBatteryZ[1], alpha=0.5)
+            #     plt.plot([item.x, item.x, env.batteries[1].x], [item.y, env.batteries[1].y, env.batteries[1].y], linewidth = 0.5, c=arrayBatteryZ[1], alpha=0.5)
             # elif battery.idBattery==3:
-            #     plt.plot([item.x, item.x, env.batteries[2].x], [item.y, env.batteries[2].y, env.batteries[2].y], linewidth = 0.7, c=arrayBatteryZ[2], alpha=0.5)
+            #     plt.plot([item.x, item.x, env.batteries[2].x], [item.y, env.batteries[2].y, env.batteries[2].y], linewidth = 0.5, c=arrayBatteryZ[2], alpha=0.5)
             # elif battery.idBattery==4:
-            #     plt.plot([item.x, item.x, env.batteries[3].x], [item.y, env.batteries[3].y, env.batteries[3].y], linewidth = 0.7, c=arrayBatteryZ[3], alpha=0.5)
+            #     plt.plot([item.x, item.x, env.batteries[3].x], [item.y, env.batteries[3].y, env.batteries[3].y], linewidth = 0.5, c=arrayBatteryZ[3], alpha=0.5)
             # elif battery.idBattery==5:
-            #     plt.plot([item.x, item.x, env.batteries[4].x], [item.y, env.batteries[4].y, env.batteries[4].y], linewidth = 0.7, c=arrayBatteryZ[4], alpha=0.5)
+            #     plt.plot([item.x, item.x, env.batteries[4].x], [item.y, env.batteries[4].y, env.batteries[4].y], linewidth = 0.5, c=arrayBatteryZ[4], alpha=0.5)
 
     # put the houses in the right battery
     for idBattery in arrayZ:
-        if idBattery==1:
-            arrayHouseZ.append(arrayBatteryZ[0])
-        elif idBattery==2:
-            arrayHouseZ.append(arrayBatteryZ[1])
-        elif idBattery==3:
-            arrayHouseZ.append(arrayBatteryZ[2])
-        elif idBattery==4:
-            arrayHouseZ.append(arrayBatteryZ[3])
-        elif idBattery==5:
-            arrayHouseZ.append(arrayBatteryZ[4])      
+            arrayHouseZ.append(tableau20[12])
 
     # get the x and y coordinates for the batteries
     for battery in env.batteries:
@@ -96,6 +85,7 @@ def visVillage(env, model):
     plt.xticks(fontsize=8, color=tableau20[19])  
     plt.yticks(fontsize=8, color=tableau20[19])   
 
+
     # Make the title 
     plt.title("Village 1 - Distribution of houses and batteries", fontsize=14, color=tableau20[19])  
             
@@ -104,5 +94,3 @@ def visVillage(env, model):
     plt.scatter(arrayHouseX, arrayHouseY, marker='2', c=arrayHouseZ)
     plt.axis()
     plt.show()
-
-    plt.savefig(model.name, bbox_inches="tight")    
