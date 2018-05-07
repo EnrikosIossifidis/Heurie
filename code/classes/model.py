@@ -11,8 +11,8 @@ class Model:
         self.modelBatteries = mBatteries
         self.name = ""
 
-    def setName(self, id):
-        self.name = "model " + str(id+1)
+    def setName(self, algorithm, id):
+        self.name = "model " + algorithm + " " + str(id+1)
 
     def printResult(self):
         print("cost of " + self.name + " = " + str(self.cost))

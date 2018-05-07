@@ -16,7 +16,7 @@ dt = makeDistanceTable(env)
 
 for i in range (0,2):
     model = runRandom(env, dt)
-    model.setName(i)
+    model.setName("random", i)
     model.printResult()
 
     visVillage(env, model)
