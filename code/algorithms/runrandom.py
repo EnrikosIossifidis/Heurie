@@ -20,10 +20,11 @@ def runRandom(env, dt):
         assignToRandomBattery(batIndexes, env.batteries, house, modelBatteries)
 
     # calculate the costs of this option
-    cost = calculateCost(modelBatteries, dt)
+    # cost = calculateCost(modelBatteries, dt)
 
     # assign all the values into a model
-    model = Model(cost, modelBatteries)
+    model = Model(modelBatteries)
+    model.CalculateCosts(dt)
 
     return model
 

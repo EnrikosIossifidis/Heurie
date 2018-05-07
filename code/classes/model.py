@@ -6,8 +6,8 @@ class Model:
             self.curCapacity = 0.0
             self.houses = list()
 
-    def __init__(self, cost, mBatteries):
-        self.cost = cost
+    def __init__(self, mBatteries):
+        self.cost = 0
         self.modelBatteries = mBatteries
         self.name = ""
 
@@ -16,3 +16,18 @@ class Model:
 
     def printResult(self):
         print("cost of " + self.name + " = " + str(self.cost))
+
+    def CalculateCosts(self, dt):
+                    
+        # make sure the cost and length are starting with 0
+        cost = 0
+        length = 0
+
+        # calculate the length of the cables
+        for battery in self.modelBatteries:
+            for house in battery.houses:
+                length += dt[house.idHouse][battery.idBattery]
+        
+        # calculate cost of the cables
+        cost = length * 9
+        self.cost = cost
