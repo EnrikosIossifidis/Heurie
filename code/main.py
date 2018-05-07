@@ -1,7 +1,7 @@
 import csv
 import os
 from functions.distanceTable import makeDistanceTable
-from functions.runrandom import runRandom
+from algorithms.runrandom import runRandom
 from functions.visualisation import visVillage
 from functions.helperfunctions import importHouses
 from functions.helperfunctions import importBatteries
