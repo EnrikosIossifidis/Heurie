@@ -11,7 +11,7 @@ def hillClimber(env, iterations):
     boundModel = runRandom(env)
 
     # calculate the costs of the random
-    boundModel.CalculateCosts
+    boundModel.calculateCosts
 
     # run the algorithm for the amount of iterations given
     for i in range(0, iterations):
@@ -19,7 +19,7 @@ def hillClimber(env, iterations):
         modelClimbed = climbHill(climberModel)
 
         # calculate the costs of the returned model
-        modelClimbed.CalculateCosts(env.distanceTable)
+        modelClimbed.calculateCosts(env.distanceTable)
 
         # compare the costs to the bound state
         if (modelClimbed.cost < boundModel.cost):

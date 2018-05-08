@@ -17,7 +17,7 @@ class Model:
     def printResult(self):
         print("cost of " + self.name + " = " + str(self.cost))
 
-    def CalculateCosts(self, dt):
+    def calculateCosts(self, dt):
                     
         # make sure the cost and length are starting with 0
         cost = 0

@@ -24,7 +24,7 @@ def runRandom(env):
     model = Model(modelBatteries)
 
     # calculate the costs of this option
-    model.CalculateCosts(env.distanceTable)
+    model.calculateCosts(env.distanceTable)
 
     return model
 
