@@ -17,10 +17,11 @@ class Environment:
             self.y = yCoor
             self.cap = houseCap
 
-    def __init__(self, houses, batteries):
+    def __init__(self, houses, batteries, id):
         self.batteries = self.importBatteries(batteries)
         self.houses = self.importHouses(houses)
         self.distanceTable = self.createDistanceTable()
+        self.village = "Village " + str(id)
 
     def importHouses(self, housesCsv):
 

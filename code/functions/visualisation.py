@@ -97,7 +97,7 @@ def visVillage(env, model):
     plt.yticks(fontsize=8, color=tableau20[19])   
 
     # Make the title 
-    plt.title("Village 1 - Distribution of houses and batteries", fontsize=14, color=tableau20[19])  
+    plt.title(env.village + " - Distribution of houses and batteries", fontsize=14, color=tableau20[19])  
             
     # plot the visualisation    
     plt.scatter(arrayBatteryX, arrayBatteryY, marker='8', c=arrayBatteryZ)
