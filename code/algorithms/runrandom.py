@@ -19,7 +19,6 @@ def runRandom(env):
             batIndexes.append(i)
         assignToRandomBattery(batIndexes, env.batteries, house, modelBatteries)
 
-
     # assign all the values into a model
     model = Model(modelBatteries)
 

@@ -1,6 +1,7 @@
 import csv
 import os
 from algorithms.runrandom import runRandom
+from algorithms.dfsBnB import depthFirstBnB 
 from functions.visualisation import visVillage
 from classes.model import Model
 from classes.environment import Environment
@@ -13,4 +14,6 @@ for i in range (0,2):
     model.printResult()
 
     visVillage(env, model)
+
+print(depthFirstBnB(model, env, dt)
 
