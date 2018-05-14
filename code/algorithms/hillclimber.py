@@ -38,8 +38,8 @@ def climbHill(model):
     batteries = model.modelBatteries
 
     # get a random battery
-    randomBattery1 = random.randint(0, 4)
-    randomBattery2 = random.randint(0, 4)
+    randomBattery1 = random.randint(0, len(batteries)-1)
+    randomBattery2 = random.randint(0, len(batteries)-1)
 
     # set the upperbounds for the houses randomizer
     setUpperboundBattery1 = 0
