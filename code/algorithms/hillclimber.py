@@ -30,6 +30,9 @@ def hillClimber(env, iterations):
         # append lowest costs to the list for comparison    
         costs.append(boundModel.cost)
 
+    # return the list of costs for plotting
+    boundModel.listOfCosts = costs
+
     return boundModel
 
 def climbHill(model):
@@ -42,9 +45,7 @@ def climbHill(model):
     randomBattery2 = random.randint(0, len(batteries)-1)
 
     # set the upperbounds for the houses randomizer
-    setUpperboundBattery1 = 0
     setUpperboundBattery1 = len(batteries[randomBattery1].houses)
-    setUpperboundBattery2 = 0
     setUpperboundBattery2 = len(batteries[randomBattery2].houses)
 
     # get a random house

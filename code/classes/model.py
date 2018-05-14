@@ -10,6 +10,7 @@ class Model:
         self.cost = 0
         self.modelBatteries = mBatteries
         self.name = ""
+        self.listOfCosts = []
 
     def setName(self, algorithm, id):
         self.name = "model " + algorithm + " " + str(id+1)
