@@ -1,0 +1,94 @@
+from classes.model import Model
+from algorithms.runrandom import runRandom
+import random
+import math
+
+def simAnneal(env, iterations, maxTemp):
+
+    # create a list with all the lowest costs per iteration for plotting purposes
+    costs = []
+
+    # run a random as a starting state
+    boundModel = runRandom(env)
+
+    # run the algorithm for the amount of iterations given
+    for i in range(0, iterations):
+        climberModel = boundModel
+        modelClimbed = climbHill(climberModel)
+
+        # calculate the costs of the returned model
+        modelClimbed.calculateCosts(env.distanceTable)
+
+        # compare the costs to the bound state
+        # if (modelClimbed.cost < boundModel.cost):
+
+        #     # if costs is lower, set the new bound state
+        #     boundModel = modelClimbed
+
+        # else:
+        #     # anneal this shit
+        temp = curTemp(i, maxTemp, iterations)
+        # print (temp)
+        boundModel = annealLinear(boundModel, modelClimbed, temp)
+
+
+        # append lowest costs to the list for comparison    
+        costs.append(boundModel.cost)
+
+    # return the list of costs for plotting
+    boundModel.listOfCosts = costs
+
+    return boundModel
+
+def climbHill(model):
+
+    # get the batteries from themodel
+    batteries = model.modelBatteries
+
+    # get a random battery
+    randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
+
+    # set the upperbounds for the houses randomizer
+    setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
+    setUpperboundBattery2 = len(batteries[randomBatteries[1]].houses)
+
+    # get a random house
+    randomHouses = (random.randint(0, (setUpperboundBattery1 - 1)), random.randint(0, (setUpperboundBattery2 - 1)))
+
+    # get the houses on the random places
+    house1 = batteries[randomBatteries[0]].houses[randomHouses[0]]
+    house2 = batteries[randomBatteries[1]].houses[randomHouses[1]]
+
+    # switch the houses with each other
+    batteries[randomBatteries[0]].houses[randomHouses[0]] = house2
+    batteries[randomBatteries[1]].houses[randomHouses[1]] = house1
+
+    # return the model
+    returnModel = Model(batteries)
+    return returnModel
+
+def annealLinear(boundModel, modelClimbed, temp):
+    randomNum = random.random()
+
+    if (acceptation(boundModel, modelClimbed, temp) > randomNum):
+        # print("Annealed")
+        # print("climber: " + str(modelClimbed.cost))
+        # print("bound: " + str(boundModel.cost))
+        boundModel = modelClimbed
+    return boundModel
+
+def curTemp(iteration, maxTemp, iterationTotal):
+    return (-(maxTemp/iterationTotal) * iteration) + maxTemp
+
+def acceptation(boundModel, modelClimbed, temp):
+    if (modelClimbed.cost < boundModel.cost):
+        # print("Lower Score")
+        return 1.0
+    # print("higher score")    
+    return math.exp((boundModel.cost - modelClimbed.cost) / temp)
+
+# functie temperatuur (waarde wat je nog accepteert) afhankelijk van in welke iteratie je zit en totaal aantal iteraties
+
+# cooling schema
+# Acceptatie kans functie
+# Verschil functie
