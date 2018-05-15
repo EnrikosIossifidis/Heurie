@@ -19,18 +19,15 @@ def simAnneal(env, iterations, maxTemp):
         # calculate the costs of the returned model
         modelClimbed.calculateCosts(env.distanceTable)
 
-        # compare the costs to the bound state
-        # if (modelClimbed.cost < boundModel.cost):
-
-        #     # if costs is lower, set the new bound state
-        #     boundModel = modelClimbed
-
-        # else:
-        #     # anneal this shit
+        # get the current temp
         temp = curTemp(i, maxTemp, iterations)
-        # print (temp)
-        boundModel = annealLinear(boundModel, modelClimbed, temp)
 
+        # get a random number between 0 and 1
+        randomNum = random.random()
+
+        # compare the result and anneal
+        if (acceptation(boundModel, modelClimbed, temp) > randomNum):
+            boundModel = modelClimbed
 
         # append lowest costs to the list for comparison    
         costs.append(boundModel.cost)
@@ -67,28 +64,14 @@ def climbHill(model):
     returnModel = Model(batteries)
     return returnModel
 
-def annealLinear(boundModel, modelClimbed, temp):
-    randomNum = random.random()
-
-    if (acceptation(boundModel, modelClimbed, temp) > randomNum):
-        # print("Annealed")
-        # print("climber: " + str(modelClimbed.cost))
-        # print("bound: " + str(boundModel.cost))
-        boundModel = modelClimbed
-    return boundModel
-
 def curTemp(iteration, maxTemp, iterationTotal):
     return (-(maxTemp/iterationTotal) * iteration) + maxTemp
 
 def acceptation(boundModel, modelClimbed, temp):
     if (modelClimbed.cost < boundModel.cost):
-        # print("Lower Score")
+
+        # if the new costs are lower, return 1
         return 1.0
-    # print("higher score")    
+    
+    # else return the calculation for the acceptation
     return math.exp((boundModel.cost - modelClimbed.cost) / temp)
-
-# functie temperatuur (waarde wat je nog accepteert) afhankelijk van in welke iteratie je zit en totaal aantal iteraties
-
-# cooling schema
-# Acceptatie kans functie
-# Verschil functie
