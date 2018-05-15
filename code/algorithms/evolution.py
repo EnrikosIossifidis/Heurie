@@ -7,7 +7,6 @@ import itertools
 MAX_GENERATIONS = 10
 POP_SIZE = 10
 
-
 def evolution(env):
     # initialize variable to store best score
     bestModel = runRandom(env)
@@ -50,31 +49,24 @@ def searchForOptimum(population, bestModel):
 def reproduce(population):
     newPopulation = []
     partnerOptions = list(range(len(population)))
-    print(partnerOptions)
 
     # randomly determine couples
     partners = []
-    for i in range(0, 9):
-        x = partnerOptions.pop(random.choice(partnerOptions))
-        print(x)
-        print(partnerOptions)
-        y = partnerOptions.pop(random.choice(partnerOptions))
-        print(y)
-        print(partnerOptions)
+    for i in range(0, 5):
+        lenListX = list(range(len(partnerOptions)))
+        xDet = random.choice(lenListX)
+        x = partnerOptions.pop(xDet)
+        lenListY = list(range(len(partnerOptions)))
+        yDet = random.choice(lenListY)
+        y = partnerOptions.pop(yDet)
         partners.append([x,y])
-    print(partners)
 
-
-    # partners = [[1,2],[3,4],[5,6],[7,8],[9,10]]
-    # print(partners)
-    
     # make babies for every couple
     for i in range (0, len(partners)):
         couple = partners[i]
-        print(couple[0])
-        # xModel = population(couple[0]) 
-        # yModel = population(couple[1])  
-        newPopulation.append(population[0])
+        xModel = population[couple[0]] 
+        yModel = population[couple[1]]  
+        newPopulation.append(xModel)
 
     return newPopulation
 
