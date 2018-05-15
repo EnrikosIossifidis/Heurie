@@ -10,9 +10,6 @@ def hillClimber(env, iterations):
     # run a random as a starting state
     boundModel = runRandom(env)
 
-    # calculate the costs of the random
-    boundModel.calculateCosts
-
     # run the algorithm for the amount of iterations given
     for i in range(0, iterations):
         climberModel = boundModel
@@ -41,25 +38,34 @@ def climbHill(model):
     batteries = model.modelBatteries
 
     # get a random battery
-    randomBattery1 = random.randint(0, len(batteries)-1)
-    randomBattery2 = random.randint(0, len(batteries)-1)
+    randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
 
     # set the upperbounds for the houses randomizer
-    setUpperboundBattery1 = len(batteries[randomBattery1].houses)
-    setUpperboundBattery2 = len(batteries[randomBattery2].houses)
+    setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
+    setUpperboundBattery2 = len(batteries[randomBatteries[1]].houses)
 
     # get a random house
-    randomHouse1 = random.randint(0, (setUpperboundBattery1 - 1))
-    randomHouse2 = random.randint(0, (setUpperboundBattery2 - 1))
+    randomHouses = (random.randint(0, (setUpperboundBattery1 - 1)), random.randint(0, (setUpperboundBattery2 - 1)))
 
     # get the houses on the random places
-    house1 = batteries[randomBattery1].houses[randomHouse1]
-    house2 = batteries[randomBattery2].houses[randomHouse2]
+    house1 = batteries[randomBatteries[0]].houses[randomHouses[0]]
+    house2 = batteries[randomBatteries[1]].houses[randomHouses[1]]
 
     # switch the houses with each other
-    batteries[randomBattery1].houses[randomHouse1] = house2
-    batteries[randomBattery2].houses[randomHouse2] = house1
+    batteries[randomBatteries[0]].houses[randomHouses[0]] = house2
+    batteries[randomBatteries[1]].houses[randomHouses[1]] = house1
 
     # return the model
     returnModel = Model(batteries)
     return returnModel
+
+
+# functie temperatuur (waarde wat je nog accepteert) afhankelijk van in welke iteratie je zit en totaal aantal iteraties
+# 
+# profiler
+# SnakeViz
+# cooling schema
+# e macht
+# Acceptatie kans functie
+# Verschil functie
+# 
