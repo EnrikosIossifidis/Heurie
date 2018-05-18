@@ -58,14 +58,3 @@ def climbHill(model):
     # return the model
     returnModel = Model(batteries)
     return returnModel
-
-
-# functie temperatuur (waarde wat je nog accepteert) afhankelijk van in welke iteratie je zit en totaal aantal iteraties
-# 
-# profiler
-# SnakeViz
-# cooling schema
-# e macht
-# Acceptatie kans functie
-# Verschil functie
-# 

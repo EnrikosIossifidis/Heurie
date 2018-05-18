@@ -20,7 +20,7 @@ def simAnneal(env, iterations, maxTemp):
         modelClimbed.calculateCosts(env.distanceTable)
 
         # get the current temp
-        temp = curTemp(i, maxTemp, iterations)
+        temp = curTempExp(i, maxTemp, iterations)
 
         # get a random number between 0 and 1
         randomNum = random.random()
@@ -64,8 +64,16 @@ def climbHill(model):
     returnModel = Model(batteries)
     return returnModel
 
-def curTemp(iteration, maxTemp, iterationTotal):
+def curTempLinear(iteration, maxTemp, iterationTotal):
     return (-(maxTemp/iterationTotal) * iteration) + maxTemp
+
+def curTempLog(iteration, maxTemp, iterationTotal):
+    print()
+    # return maxTemp/(math.log(iteration + 1))
+    # return (maxTemp*(iterationTotal/maxTemp)**(iteration/iterationTotal))
+
+def curTempExp(iteration, maxTemp, iterationTotal):
+    return(maxTemp**(iteration/iterationTotal))
 
 def acceptation(boundModel, modelClimbed, temp):
     if (modelClimbed.cost < boundModel.cost):
@@ -74,4 +82,5 @@ def acceptation(boundModel, modelClimbed, temp):
         return 1.0
     
     # else return the calculation for the acceptation
+    print(math.exp((boundModel.cost - modelClimbed.cost) / temp))
     return math.exp((boundModel.cost - modelClimbed.cost) / temp)
