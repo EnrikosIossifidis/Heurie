@@ -82,5 +82,5 @@ def acceptation(boundModel, modelClimbed, temp):
         return 1.0
     
     # else return the calculation for the acceptation
-    print(math.exp((boundModel.cost - modelClimbed.cost) / temp))
+    # print(math.exp((boundModel.cost - modelClimbed.cost) / temp))
     return math.exp((boundModel.cost - modelClimbed.cost) / temp)
