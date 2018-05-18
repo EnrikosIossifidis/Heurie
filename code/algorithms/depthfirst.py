@@ -4,7 +4,7 @@ import copy
 from operator import itemgetter
 import numpy as np
 
-def depthFirstBnB(hillclimber, env, dt):
+def depthFirstBnB(model, env):
 
     # create the array of batteries for model
     modelBatteries = createModelBatteries(env.batteries)
@@ -13,7 +13,7 @@ def depthFirstBnB(hillclimber, env, dt):
     depthFirstModel = Model(modelBatteries)
     
     # initiliaze upperbound at random cost
-    model = hillclimber
+    model = model
     upperBound = model.cost
     levels = len(env.houses)
     solution = []
@@ -36,15 +36,16 @@ def depthFirstBnB(hillclimber, env, dt):
             newNode = np.append(node, modelBatteries[i].idBattery)
             if (len(newNode) - 1) == levels:
                 if checkCapacity(newNode, env.batteries, modelBatteries, env.houses):
-                    costs = checkCost(newNode, dt)
+                    costs = model.calculateCosts(env.distanceTable)
                     if costs < upperBound:
+
                         upperBound = costs 
                         print(upperBound)
                         solution = newNode.tolist()
 
             else:
-                if checkCapacity(newNode, env.batteries, modelBatteries, env.houses) and checkCost(newNode, dt) < upperBound:
-                    tempCostNodes.append([dt[len(newNode) - 1][newNode[-1]], newNode])
+                if checkCapacity(newNode, env.batteries, modelBatteries, env.houses) and model.calculateCosts(env.distanceTable) < upperBound:
+                    tempCostNodes.append([env.distanceTable[len(newNode) - 1][newNode[-1]], newNode])
         
                 else:
                     continue
@@ -60,7 +61,7 @@ def depthFirstBnB(hillclimber, env, dt):
         depthFirstModel.modelBatteries[solution[i] - 1].houses.append(env.houses[i - 1])
         depthFirstModel.modelBatteries[solution[i] - 1].curCapacity += env.houses[i - 1].cap
         
-    depthFirstModel.calculateCosts(dt)
+    depthFirstModel.calculateCosts(env.distanceTable)
     return depthFirstModel
 
 def checkCapacity(newNode, envBatteries, mBatteries, houses):
@@ -82,19 +83,12 @@ def checkCapacity(newNode, envBatteries, mBatteries, houses):
     if check == True:
         return True
 
-def checkCost(newNode, dt):
-
-    costs = 0
-    for i in range(1, len(newNode)):
-        costs += (9 * dt[i][newNode[i]])
-
-    return costs
-
+# Waarom heb je een functie geschreven om een lijst in een nieuwe lijst te zetten? Wat is hier precies het nut van?
 def createModelBatteries(batteries):
 
     modelBatteries = []
     
-    for i in range (0,len(batteries)):
+    for i in range (0, len(batteries)):
         modelBatteries.append(Model.Battery(i+1))
 
     return modelBatteries
