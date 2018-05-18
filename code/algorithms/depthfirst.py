@@ -7,9 +7,7 @@ import numpy as np
 def depthFirstBnB(hillclimber, env, dt):
 
     # create the array of batteries for model
-    modelBatteries = []
-    for i in range (0,len(env.batteries)):
-        modelBatteries.append(Model.Battery(i+1))
+    modelBatteries = createModelBatteries(env.batteries)
 
     # initialize algorithm model
     depthFirstModel = Model(modelBatteries)
@@ -18,10 +16,6 @@ def depthFirstBnB(hillclimber, env, dt):
     model = hillclimber
     upperBound = model.cost
     levels = len(env.houses)
-    # houseCaps = []
-    # for house in env.houses:
-    #     houseCaps.append([house.cap, house.idHouse])
-
     solution = []
 
     # create stack with root houseNode
@@ -33,10 +27,6 @@ def depthFirstBnB(hillclimber, env, dt):
         # select last item and pop it
         node = depthFirstStack.pop()
         tempCostNodes = []
-        # forwardCheckCap = []
-        # occupiedHouses = len(node) - 1
-        # forwardCheckCap = sorted(houseCaps[occupiedHouses:], key=itemgetter(0))
-        # print(forwardCheckCap[0][0])
 
         # create all children
         lenModelBatteries = len(modelBatteries)
@@ -49,6 +39,7 @@ def depthFirstBnB(hillclimber, env, dt):
                     costs = checkCost(newNode, dt)
                     if costs < upperBound:
                         upperBound = costs 
+                        print(upperBound)
                         solution = newNode.tolist()
 
             else:
@@ -99,3 +90,11 @@ def checkCost(newNode, dt):
 
     return costs
 
+def createModelBatteries(batteries):
+
+    modelBatteries = []
+    
+    for i in range (0,len(batteries)):
+        modelBatteries.append(Model.Battery(i+1))
+
+    return modelBatteries
