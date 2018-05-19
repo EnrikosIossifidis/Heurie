@@ -16,7 +16,7 @@ class Model:
         self.name = "model " + algorithm + " " + str(id+1)
 
     def printResult(self):
-        print("cost of " + self.name + " = " + str(self.cost))
+        print("cost of cables in " + self.name + " = " + str(self.cost))
 
     def calculateCosts(self, dt):
                     

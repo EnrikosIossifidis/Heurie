@@ -1,8 +1,9 @@
 from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
+import math
 
-def hillClimber(env, iterations):
+def simAnneal(env, iterations, maxTemp):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
@@ -18,10 +19,14 @@ def hillClimber(env, iterations):
         # calculate the costs of the returned model
         modelClimbed.calculateCosts(env.distanceTable)
 
-        # compare the costs to the bound state
-        if (modelClimbed.cost < boundModel.cost):
+        # get the current temp
+        temp = curTempExp(i, maxTemp, iterations)
 
-            # if costs is lower, set the new bound state
+        # get a random number between 0 and 1
+        randomNum = random.random()
+
+        # compare the result and anneal
+        if (acceptation(boundModel, modelClimbed, temp) > randomNum):
             boundModel = modelClimbed
 
         # append lowest costs to the list for comparison    
@@ -58,3 +63,24 @@ def climbHill(model):
     # return the model
     returnModel = Model(batteries)
     return returnModel
+
+def curTempLinear(iteration, maxTemp, iterationTotal):
+    return (-(maxTemp/iterationTotal) * iteration) + maxTemp
+
+def curTempLog(iteration, maxTemp, iterationTotal):
+    print()
+    # return maxTemp/(math.log(iteration + 1))
+    # return (maxTemp*(iterationTotal/maxTemp)**(iteration/iterationTotal))
+
+def curTempExp(iteration, maxTemp, iterationTotal):
+    return(maxTemp**(iteration/iterationTotal))
+
+def acceptation(boundModel, modelClimbed, temp):
+    if (modelClimbed.cost < boundModel.cost):
+
+        # if the new costs are lower, return 1
+        return 1.0
+    
+    # else return the calculation for the acceptation
+    # print(math.exp((boundModel.cost - modelClimbed.cost) / temp))
+    return math.exp((boundModel.cost - modelClimbed.cost) / temp)
