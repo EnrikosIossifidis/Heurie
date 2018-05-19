@@ -13,7 +13,10 @@ def runRandom(env):
         modelBatteries.append(battery)
 
     # assign every house to a random battery of which the capacity is still sufficient
-    for house in env.houses:
+    listOfHouses = env.houses
+    random.shuffle(listOfHouses)
+
+    for house in listOfHouses:
         batIndexes = list()
         for i in range(0,len(env.batteries)):
             batIndexes.append(i)
@@ -41,7 +44,7 @@ def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
         modelBatteries[batIndex].houses.append(house)
         modelBatteries[batIndex].curCapacity += house.cap
 
-    # else retrieve a random index again (this way it can happen that it chooses 1 >> is full >> it 2 >> is full >> it chooses 1 again... this creates a loop)
+    # else retrieve a random index again
     else:
         batIndexes.remove(batIndex) 
         assignToRandomBattery(batIndexes, batteries, house, modelBatteries)
