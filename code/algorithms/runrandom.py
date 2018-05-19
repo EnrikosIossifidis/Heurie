@@ -4,7 +4,15 @@ import sys
 from classes.model import Model
 
 def runRandom(env):
-    
+
+    # keep randomizing until legit solution is found
+    random = randomize(env)
+    while random == False:
+        random = randomize(env)
+    return random
+
+def randomize(env):
+
     modelBatteries = []
 
     # create the array of batteries with the id starting at 1
@@ -16,32 +24,45 @@ def runRandom(env):
     listOfHouses = env.houses
     random.shuffle(listOfHouses)
 
-    for house in listOfHouses:
-        batIndexes = list()
+    # assign random battery to every house
+    for house in env.houses:
+        batIndexes = []
         for i in range(0,len(env.batteries)):
             batIndexes.append(i)
         assignToRandomBattery(batIndexes, env.batteries, house, modelBatteries)
+    
+    # check if every house is connected
+    totalHouses = 0
+    for battery in modelBatteries:
+        totalHouses += len(battery.houses)
+    
+    if totalHouses == len(env.houses):
 
-    # assign all the values into a model
-    model = Model(modelBatteries)
+        # assign all the values into a model
+        model = Model(modelBatteries)
 
-    # calculate the costs of this option
-    model.calculateCosts(env.distanceTable)
+        # calculate the costs of this option
+        model.calculateCosts(env.distanceTable)
 
-    return model
-
+        return model
+    
+    else:
+        return False
 
 def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
-
+ 
     secureRandom = random.Random()
-    try:
+ 
+    try: 
         batIndex = secureRandom.choice(batIndexes)
     except IndexError:
-        return 0
-        
+        return False
+
+    randomBat = modelBatteries[batIndex]
+
     # if the capacity has enough room, assign house to battery 
-    if (modelBatteries[batIndex].curCapacity + house.cap)<=batteries[batIndex].maxCapacity:
-        modelBatteries[batIndex].houses.append(house)
+    if randomBat.checkCapacity(randomBat.idBattery, batteries, randomBat.houses, house) == True:
+        randomBat.houses.append(house)
         modelBatteries[batIndex].curCapacity += house.cap
 
     # else retrieve a random index again

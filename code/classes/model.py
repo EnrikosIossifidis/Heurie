@@ -5,6 +5,14 @@ class Model:
             self.idBattery = id
             self.curCapacity = 0.0
             self.houses = list()
+        
+        def checkCapacity(self, id, EnvBatteries, houses, newHouse):
+            totalHouseCap = 0
+            for house in houses:
+                totalHouseCap += house.cap 
+                
+            if totalHouseCap + newHouse.cap <= EnvBatteries[id - 1].maxCapacity:
+                return True
 
     def __init__(self, mBatteries):
         self.cost = 0

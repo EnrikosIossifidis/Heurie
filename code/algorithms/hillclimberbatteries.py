@@ -3,13 +3,13 @@ from classes.environment import Environment
 from algorithms.depthfirst import createModelBatteries
 from algorithms.runrandom import runRandom
 from algorithms.hillclimber import hillClimber
+from algorithms.simulatedannealing import sigmoid
 from algorithms.simulatedannealing import acceptation
-from algorithms.simulatedannealing import curTemp
-from functions.visualisation import visVillage
+from algorithms.simulatedannealing import curTempLinear
 import random
 import math
 
-def hillClimberBatteries(env, iterations, beginTemp):
+def hillClimberBatteries(env, iterations, beginTemp, endTemp):
 
     # keep list with scores and upperbound
     costs = []
@@ -24,20 +24,20 @@ def hillClimberBatteries(env, iterations, beginTemp):
     upperbound = costs[0].cost
 
     iteration = 1
-    endTemp = 0
 
     while iteration <= iterations:
-        currentTemp = curTemp(iteration, beginTemp, iterations)
-        neighbourEnv = pickRandomNeighbour(hillClimberEnv)
-        neighbourModel = hillClimber(neighbourNode, 1000)
-        nodeDifference = neighbourModel.cost - costs[-1].cost
+        currentTemp = sigmoid(a, beginTemp, endTemp, iteration, iterations)
+        print(iteration)
+        print(currentTemp)
 
-        if checkNode(costs[-1].cost, neighbourModel.cost, currentTemp):
+        neighbourEnv = pickRandomNeighbour(hillClimberEnv)
+        neighbourModel = hillClimber(neighbourEnv, 1000)
+        deltaNodes = neighbourModel.cost - costs[-1].cost
+        if  deltaNodes < 0 or checkNode(iteration, iterations, deltaNodes, currentTemp):
             costs.append(neighbourModel)
-            hillClimberEnv = neighbourEnv
+            hillClimberEnv = neighbourEnv          
             if costs[-1].cost < upperbound:
                 upperbound = neighbourModel.cost
-                print(upperbound)        
         else:
             costs.append(costs[-1])
         iteration += 1
@@ -53,7 +53,7 @@ def makeHillClimberPakackage(env, model, costs):
     model.listOfCosts = costs
     model.setName("batteryHillClimber", 1)
     model.printResult()
-    hillClimberArray = [env, model]
+    hillClimberArray = [env, model, costs]
     return hillClimberArray
 
 def pickRandomNeighbour(inputBatteries):
@@ -78,12 +78,10 @@ def randomizeBatteries(batteries):
         battery.x = random.randint(0, neighbourhoodLength)
         battery.y = random.randint(0, neighbourhoodLength)
 
-def checkNode(currentCost, neighbourCost, temp):
+def checkNode(iteration, iterations, delta, temp):
     randomInt = random.random()
-    probality = math.exp((currentCost - neighbourCost) / temp)
-    if neighbourCost < currentCost:
-        return True
-    elif probality > randomInt:
+    probality = math.exp(-delta / temp)
+    if probality > randomInt:
         return True
     else:
         return False

@@ -58,3 +58,5 @@ def climbHill(model):
     # return the model
     returnModel = Model(batteries)
     return returnModel
+
+# capaciteitscontrole
