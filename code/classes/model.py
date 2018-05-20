@@ -13,6 +13,7 @@ class Model:
                 
             if totalHouseCap + newHouse.cap <= EnvBatteries[id - 1].maxCapacity:
                 return True
+    
 
     def __init__(self, mBatteries):
         self.cost = 0
@@ -40,3 +41,27 @@ class Model:
         # calculate cost of the cables
         cost = length * 9
         self.cost = cost
+
+    def checkValidity(self, env):
+        # print("houses per battery:")
+        # for battery in self.modelBatteries:
+        #     print(len(battery.houses))
+    
+        for i in range(0, len(self.modelBatteries)):
+            totCapHouses = 0
+            for house in self.modelBatteries[i].houses:
+                totCapHouses += house.cap
+            # print("cap Battery")
+            # print(env.batteries[i].maxCapacity)
+            
+            # print("cap Houses")
+            # print(totCapHouses)
+
+            # break out of loop and return False if capacity of battery is exceeded
+            if totCapHouses > env.batteries[i].maxCapacity:
+                return False
+        # if capacity is not exceeded in any battery, return True
+        return True
+    
+
+

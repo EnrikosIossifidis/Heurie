@@ -25,7 +25,7 @@ def randomize(env):
     random.shuffle(listOfHouses)
 
     # assign random battery to every house
-    for house in env.houses:
+    for house in listOfHouses:
         batIndexes = []
         for i in range(0,len(env.batteries)):
             batIndexes.append(i)

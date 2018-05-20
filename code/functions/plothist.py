@@ -32,7 +32,7 @@ def plotHist(array):
     ax.get_xaxis().tick_bottom()    
     ax.get_yaxis().tick_left()    
 
-    plt.hist(array)
+    plt.hist(array, bins=100)
     plt.title('Hist. Village 3 - Hill climber')
     name = "Hist. hillclimber.png"
     plt.savefig('../results/' + name)
