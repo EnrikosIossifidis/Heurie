@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt  
 
-def plotHist(array, number, iterations, nameAlgorithm):
+def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations):
  
     # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),    
@@ -31,8 +31,21 @@ def plotHist(array, number, iterations, nameAlgorithm):
     ax.get_xaxis().tick_bottom()    
     ax.get_yaxis().tick_left()    
 
-    plt.hist(array, bins = 15, color = tableau20[2], histtype='step', fill=False)
-    name = "Figure " + str(number) + ". Histogram of " + nameAlgorithm + " results, n = " + str(iterations)
+    # pick colors
+    colors = []
+    for i in range(0, len(arrays)):
+        colors.append(tableau20[i+3])
+
+    # make actual plot
+    plt.hist(arrays, bins = 15, color = colors, histtype='step', fill=False, label = namesOfAlgoritms)
+
+    # add legend
+    plt.legend(prop={'size': 10})
+
+    # construct name from input parameters
+    name = "Figure " + str(number) + ". Histogram of performance, n = " + str(iterations)
+    
+    # show titles and axes
     plt.title(name)
     plt.xlabel("cost")
     plt.ylabel("frequency")

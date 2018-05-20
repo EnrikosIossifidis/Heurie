@@ -34,7 +34,7 @@ def hillClimber(env, iterations):
 
 def climbHill(model):
 
-    # get the batteries from themodel
+    # get the batteries from the model
     batteries = model.modelBatteries
 
     # get a random battery

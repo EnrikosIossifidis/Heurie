@@ -3,21 +3,17 @@ from algorithms.runrandom import runRandom
 import random
 import itertools
 
-# define constants/parameters
-MAX_GENERATIONS = 100
-POP_SIZE = 40
-
-def evolution(env):    
+def evolution(env, maxGenerations, popSize):    
   
     # generate an initial population
-    population = generateInitialPop(env)
+    population = generateInitialPop(env, popSize)
     
     # initialize variable to store best score
     # runRandom is just for initialization
     bestModel = runRandom(env)
     bestModel = searchForOptimum(population, bestModel, env)
 
-    for i in range(0, MAX_GENERATIONS):
+    for i in range(0, maxGenerations):
         print(i)
         # create children by crossover
         children = reproduce(population, env)
@@ -32,7 +28,7 @@ def evolution(env):
         newGeneration = population + children
 
         # select the best based on fitness score to keep population size constant
-        population = selection(newGeneration)
+        population = selection(newGeneration, popSize)
     
     # search for optimum in final population
     bestModel = searchForOptimum(population, bestModel, env)
@@ -63,9 +59,9 @@ def evolution(env):
 #     # if capacity is not exceeded in any battery, return True
 #     return True
 
-def generateInitialPop(env):
+def generateInitialPop(env, popSize):
     population = []
-    for i in range(0, POP_SIZE):
+    for i in range(0, popSize):
         population.append(runRandom(env))
         # print("cost of population item " + str(i) + ": " + str(population[i].cost))
     return population
@@ -130,7 +126,7 @@ def reproduce(population, env):
     return newChildren
 
 # fitness proportionate selection
-def selection(newGeneration):
+def selection(newGeneration, popSize):
     selection = []
 
     # calculate sum of fitness
@@ -147,7 +143,7 @@ def selection(newGeneration):
         previousProp = prop
 
     # get random value and locate corresponding model
-    for i in range(0, POP_SIZE):         
+    for i in range(0, popSize):         
         value = random.random() 
 
         found = False
