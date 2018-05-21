@@ -10,10 +10,8 @@ class Model:
             totalHouseCap = 0
             for house in houses:
                 totalHouseCap += house.cap 
-                
             if totalHouseCap + newHouse.cap <= EnvBatteries[id - 1].maxCapacity:
                 return True
-    
 
     def __init__(self, mBatteries):
         self.cost = 0

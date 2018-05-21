@@ -2,7 +2,7 @@ from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
 
-def hillClimber(env, iterations):
+def hillClimber(env, iterations, trials):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
@@ -13,7 +13,12 @@ def hillClimber(env, iterations):
     # run the algorithm for the amount of iterations given
     for i in range(0, iterations):
         climberModel = boundModel
-        modelClimbed = climbHill(climberModel)
+
+        check = False
+        while check == False:
+            for j in range(0, trials):
+                modelClimbed = climbHill(climberModel)  
+            check = modelClimbed.checkValidity(env)
 
         # calculate the costs of the returned model
         modelClimbed.calculateCosts(env.distanceTable)
@@ -24,7 +29,7 @@ def hillClimber(env, iterations):
             # if costs is lower, set the new bound state
             boundModel = modelClimbed
 
-        # append lowest costs to the list for comparison    
+            # append lowest costs to the list for comparison    
         costs.append(boundModel.cost)
 
     # return the list of costs for plotting
@@ -58,5 +63,3 @@ def climbHill(model):
     # return the model
     returnModel = Model(batteries)
     return returnModel
-
-# capaciteitscontrole

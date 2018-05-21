@@ -1,9 +1,8 @@
 from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
-import math
 
-def simAnneal(env, iterations, maxTemp):
+def hillClimber(env, iterations):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
@@ -19,14 +18,10 @@ def simAnneal(env, iterations, maxTemp):
         # calculate the costs of the returned model
         modelClimbed.calculateCosts(env.distanceTable)
 
-        # get the current temp
-        temp = curTempExp(i, beginTemp, endTemp, iterations)
+        # compare the costs to the bound state
+        if (modelClimbed.cost < boundModel.cost):
 
-        # get a random number between 0 and 1
-        randomNum = random.random()
-
-        # compare the result and anneal
-        if (acceptation(boundModel, modelClimbed, temp) > randomNum):
+            # if costs is lower, set the new bound state
             boundModel = modelClimbed
 
         # append lowest costs to the list for comparison    
@@ -39,11 +34,11 @@ def simAnneal(env, iterations, maxTemp):
 
 def climbHill(model):
 
-    # get the batteries from themodel
+    # get the batteries from the model
     batteries = model.modelBatteries
 
     # get a random battery
-    randomBatteries = (random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
+    randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
 
     # set the upperbounds for the houses randomizer
     setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
@@ -63,30 +58,3 @@ def climbHill(model):
     # return the model
     returnModel = Model(batteries)
     return returnModel
-
-def curTempLinear(beginTemp, endTemp, iteration, iterations):
-    return (beginTemp - (iteration*((beginTemp - endTemp)/iterations)))
-
-def curTempLog(constant, iteration):
-    return (constant/math.log(1 + iteration))
-    # return maxTemp/(math.log(iteration + 1))
-    # return (maxTemp*(iterationTotal/maxTemp)**(iteration/iterationTotal))
-
-def curTempExp(beginTemp, endTemp, iteration, iterations):
-    if endTemp == 0:
-        endTemp = 0.001
-    return (beginTemp*(endTemp/beginTemp)**(iteration/iterations))
-
-def sigmoid(beginTemp, endTemp, iteration, iterations):
-    a = 0.3
-    sigmoid = endTemp + (beginTemp - endTemp) / (1 + math.exp((a*(iteration - (iterations/2)))))
-    return sigmoid
-
-def acceptation(boundModel, modelClimbed, temp):
-    if (modelClimbed.cost < boundModel.cost):
-
-        # if the new costs are lower, return 1
-        return 1.0
-    
-    # else return the calculation for the acceptation
-    return math.exp((boundModel.cost - modelClimbed.cost) / temp)
