@@ -3,7 +3,7 @@ from algorithms.runrandom import runRandom
 import random
 import math
 
-def simAnneal(env, iterations, maxTemp):
+def simAnneal(env, iterations, beginTemp, endTemp):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
@@ -20,7 +20,7 @@ def simAnneal(env, iterations, maxTemp):
         modelClimbed.calculateCosts(env.distanceTable)
 
         # get the current temp
-        temp = curTempExp(i, beginTemp, endTemp, iterations)
+        temp = curTempSigmoid(beginTemp, endTemp, i, iterations)
 
         # get a random number between 0 and 1
         randomNum = random.random()
@@ -72,10 +72,7 @@ def curTempLog(beginTemp, endTemp, iteration, iterations):
     # return maxTemp/(math.log(iteration + 1))
     # return (maxTemp*(iterationTotal/maxTemp)**(iteration/iterationTotal))
 
-def curTempExp(beginTemp, endTemp, iteration, iterations):
-    return (beginTemp*(endTemp/maxTemp)**(iteration/iterations))
-
-def sigmoid(a, beginTemp, endTemp, iteration, iterations):
+def curTempSigmoid(beginTemp, endTemp, iteration, iterations):
     sigmoid = endTemp + (beginTemp - endTemp) / (1 + math.exp(0,3*(iteration - (iterations/2))))
     return sigmoid
 
@@ -86,5 +83,4 @@ def acceptation(boundModel, modelClimbed, temp):
         return 1.0
     
     # else return the calculation for the acceptation
-    # print(math.exp((boundModel.cost - modelClimbed.cost) / temp))
     return math.exp((boundModel.cost - modelClimbed.cost) / temp)
