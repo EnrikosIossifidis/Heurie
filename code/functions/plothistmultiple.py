@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt  
 
-def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations):
+def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations, village):
  
     # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),    
@@ -17,7 +17,7 @@ def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations):
     # You typically want your plot to be ~1.33x wider than tall. This plot is a rare    
     # exception because of the number of lines being plotted on it.    
     # Common sizes: (10, 7.5) and (12, 9)    
-    plt.figure(figsize=(6, 5))    
+    plt.figure(figsize=(7, 6))    
     
     # Remove the plot frame lines. They are unnecessary chartjunk.    
     ax = plt.subplot(111)    
@@ -37,20 +37,21 @@ def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations):
         colors.append(tableau20[i+3])
 
     # make actual plot
-    plt.hist(arrays, bins = 15, color = colors, histtype='step', fill=False, label = namesOfAlgoritms)
+    plt.hist(arrays, bins = 15, color = colors, histtype='step', fill=False, label = namesOfAlgoritms) 
 
     # add legend
     plt.legend(prop={'size': 10})
 
-    # construct name from input parameters
-    name = "Figure " + str(number) + ". Histogram of performance, n = " + str(iterations)
+    # construct title and filename from input parameters
+    title = "Figure " + str(number) + ". Histogram of performance, n = " + str(iterations) + "\n\n (village: " + str(village) + ")"
+    name = "fig" + str(number) + "_performance_histogram_" + str(iterations) + "_v" + str(village) + ".png"
     
-    # show titles and axes
-    plt.title(name)
+    # show titles and axes labels
+    plt.title(title)
     plt.xlabel("cost")
     plt.ylabel("frequency")
 
-    name = name + ".png"
+    # save plot
     plt.savefig('../results/' + name)
 
 

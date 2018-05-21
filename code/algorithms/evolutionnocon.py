@@ -3,7 +3,7 @@ from algorithms.runrandom import runRandom
 import random
 import itertools
 
-def evolution(env, maxGenerations, popSize):    
+def evolutionNoCon(env, maxGenerations, popSize):    
   
     # generate an initial population
     population = generateInitialPop(env, popSize)
@@ -35,11 +35,32 @@ def evolution(env, maxGenerations, popSize):
 
     return bestModel
 
+# def checkValidity(env, model):
+#     # print("houses per battery:")
+#     # for battery in model.modelBatteries:
+#     #     print(len(battery.houses))
+   
+#     for i in range(0, len(model.modelBatteries)):
+#         totCapHouses = 0
+#         for house in model.modelBatteries[i].houses:
+#             totCapHouses += house.cap
+#         # print("cap Battery")
+#         # print(env.batteries[i].maxCapacity)
+        
+#         # print("cap Houses")
+#         # print(totCapHouses)
+
+#         # break out of loop and return False if capacity of battery is exceeded
+#         if totCapHouses > env.batteries[i].maxCapacity:
+#             return False
+#     # if capacity is not exceeded in any battery, return True
+#     return True
+
 def generateInitialPop(env, popSize):
     population = []
     for i in range(0, popSize):
         population.append(runRandom(env))
-
+        # print("cost of population item " + str(i) + ": " + str(population[i].cost))
     return population
 
 # check if a new best (valid!) solution is found, store that one 
@@ -48,24 +69,15 @@ def searchForOptimum(population, bestModel, env):
     # sort population by cost (lowest to highest)
     sortedPopulation = sorted(population, key=lambda x: x.cost, reverse=False)
 
-    # keep checking for bestModel in sortedPopulation unless cost is too high anyway
-    for model in sortedPopulation:
-        
-        # if the model cost exceeds upper bound the next once will so too
-        # therefore do no update bestModel
-        if model.cost > bestModel.cost:
-            return bestModel
+    # check if lowest cost is low enough to be new best score
 
-        # if model's costs are lower, check if solution is valid
-        else: 
-            if model.checkValidity(env) == True:
-                # if so, update bestModel
-                return model
+    if sortedPopulation[0].cost < bestModel.cost:
+        # if so return best
+        return sortedPopulation[0]
+    else:
+        # if not, return previous
+        return bestModel
 
-    # if all models had a lower score, but none were valid
-    return bestModel
-
-# merge half of both chromosomes to create new chromosome (may result in invalid child)
 def reproduce(population, env):
     newChildren = []
     partnerOptions = list(range(len(population)))
@@ -95,7 +107,7 @@ def reproduce(population, env):
 
         chromosomeChildX, chromosomeChildY = fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy)
 
-        # convert child back to type model
+        # back to child 
         childX = chromosomeToModel(chromosomeChildX, env)
         childY = chromosomeToModel(chromosomeChildY, env)    
 
@@ -133,8 +145,9 @@ def selection(newGeneration, popSize):
                     selection.append(newGeneration[j])
                     found = True; 
     return selection
+
         
-# converts model class to chromosome format
+# methods belong to reproduction
 def modelToChromosome(model):
     chromosome = []*150
     for bat in model.modelBatteries:

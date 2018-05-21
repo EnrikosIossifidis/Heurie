@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt  
 
-def plotHist(array, number, iterations, nameAlgorithm):
+def plotHist(array, number, iterations, nameAlgorithm, village):
  
     # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),    
@@ -17,7 +17,7 @@ def plotHist(array, number, iterations, nameAlgorithm):
     # You typically want your plot to be ~1.33x wider than tall. This plot is a rare    
     # exception because of the number of lines being plotted on it.    
     # Common sizes: (10, 7.5) and (12, 9)    
-    plt.figure(figsize=(6, 5))    
+    plt.figure(figsize=(7, 6))    
     
     # Remove the plot frame lines. They are unnecessary chartjunk.    
     ax = plt.subplot(111)    
@@ -32,12 +32,17 @@ def plotHist(array, number, iterations, nameAlgorithm):
     ax.get_yaxis().tick_left()    
 
     plt.hist(array, bins = 15, color = tableau20[2], histtype='step', fill=False)
-    name = "Figure " + str(number) + ". Histogram of " + nameAlgorithm + " results, n = " + str(iterations)
-    plt.title(name)
+
+    # construct title and filename from input parameters
+    title = "Figure " + str(number) + ". Histogram of performance" + nameAlgorithm + ", n = " + str(iterations) + "\n\n (village: " + str(village) + ")"
+    name = "fig" + str(number) + "_performance_histogram_" + str(iterations) + "_v" + str(village) + ".png"
+
+    # show titles and axes
+    plt.title(title)
     plt.xlabel("cost")
     plt.ylabel("frequency")
 
-    name = name + ".png"
+    # save plot
     plt.savefig('../results/' + name)
 
 
