@@ -56,7 +56,7 @@ def plotIterativeSearch(arrays, number, nameAlgorithm, village):
 
     # save the model into a png file in the results map
     name = name + ".png"
-    plt.savefig('../results/' + name)
+    plt.savefig('../results/personalresults/' + name)
 
 
     

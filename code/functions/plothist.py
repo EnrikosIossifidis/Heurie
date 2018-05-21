@@ -43,6 +43,6 @@ def plotHist(array, number, iterations, nameAlgorithm, village):
     plt.ylabel("frequency")
 
     # save plot
-    plt.savefig('../results/' + name)
+    plt.savefig('../results/personalresults/' + name)
 
 
