@@ -1,5 +1,6 @@
 from classes.environment import Environment
 from classes.model import Model
+import random
 
 def kMeans(env, iterations):
 
@@ -16,7 +17,10 @@ def assignHousesToBatteries(kMeansEnv):
 
     modelBatteries = kMeansEnv.createModelBatteries()
 
-    for house in kMeansEnv.houses:
+    kMeansHouses = kMeansEnv.houses
+    random.shuffle(kMeansHouses)
+
+    for house in kMeansHouses:
         batteryDistance = []
         for battery in kMeansEnv.batteries:
             batteryDistance.append([kMeansEnv.distanceTable[house.idHouse][battery.idBattery], battery.idBattery])
@@ -34,10 +38,10 @@ def assignHousesToBatteries(kMeansEnv):
                 print("I don't fit")
                 
                 check = True
+                i = 1
+                
                 while (check):
-                    i = 1
                     batteryDistance = sorted(batteryDistance)
-                    print(batteryDistance)
                     nearestNeighbour = batteryDistance[i]
                     battery = modelBatteries[nearestNeighbour[1]-1]
                     if battery.checkCapacity(battery.idBattery, kMeansEnv.batteries, battery.houses, house):
@@ -47,7 +51,7 @@ def assignHousesToBatteries(kMeansEnv):
                     else:
                         print("second try wont fit neither")
                         i = i + 1
-                        if (i == 3):
+                        if (i == 4):
                             print("i wont fit anywhere")
                             check = False
 
