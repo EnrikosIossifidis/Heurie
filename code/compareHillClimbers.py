@@ -15,7 +15,7 @@ from classes.environment import Environment
 
 env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
 
-it = 50
+it = 70
 
 listOfHillClimber1 = []
 listOfHillClimber3 = []

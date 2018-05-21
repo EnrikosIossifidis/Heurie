@@ -1,3 +1,5 @@
+import csv
+
 class Model:
     
     class Battery:
@@ -24,6 +26,28 @@ class Model:
 
     def printResult(self):
         print("cost of cables in " + self.name + " = " + str(self.cost))
+    
+    def write(self):
+        listOfhouses = []*150
+        for bat in self.modelBatteries:
+            for house in bat.houses:
+                listOfhouses.append([house.idHouse, bat.idBattery])
+        
+        # sort the list of houses on houseId
+        listOfhouses = sorted(listOfhouses, key=lambda tup: tup[0])
+        connections = []
+        connections.append(self.cost)
+
+        # assign battery value to connection list in order of house number
+        for house in listOfhouses:
+            connections.append(house[1])
+
+        with open(r'output_queue.csv', 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(connections)
+
+        return connections
+    
 
     def calculateCosts(self, dt):
                     

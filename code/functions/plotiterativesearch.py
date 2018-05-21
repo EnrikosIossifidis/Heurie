@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def plotIterativeSearch(array, number, nameAlgorithm):
+def plotIterativeSearch(arrays, number, nameAlgorithm, village):
     
      # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (255, 127, 14), (255, 187, 120),    
@@ -15,6 +15,10 @@ def plotIterativeSearch(array, number, nameAlgorithm):
         r, g, b = tableau20[i]    
         tableau20[i] = (r / 255., g / 255., b / 255.) 
     
+    # You typically want your plot to be ~1.33x wider than tall. This plot is a rare    
+    # exception because of the number of lines being plotted on it.    
+    # Common sizes: (10, 7.5) and (12, 9)    
+    plt.figure(figsize=(8, 6))    
 
     # Remove the plot frame lines 
     ax = plt.subplot(111)    
@@ -32,19 +36,31 @@ def plotIterativeSearch(array, number, nameAlgorithm):
     plt.xticks(fontsize=8, color=tableau20[19])  
     plt.yticks(fontsize=8, color=tableau20[19])   
 
-    # add title 
-    name = "Figure " + str(number) + ". Progress over iterations of " + nameAlgorithm
-    plt.title(name)
+
+    # construct title and filename from input parameters
+    title = "Figure " + str(number) + ". Progress over iterations of " + nameAlgorithm + "\n\n (village: " + str(village) + ")"
+    name = "fig" + str(number) + "_progress_iterations_" + nameAlgorithm + "_v" + str(village)
 
     # add axis labels
     plt.xlabel("iterations")
     plt.ylabel("cost")
-            
-    # plot the visualisation    
-    plt.plot(array)
+
+    # show title 
+    plt.title(title)
+
+    # plot the visualisation   
+    for array in arrays:          
+        plt.plot(array)
+
     plt.axis()
 
     # save the model into a png file in the results map
     name = name + ".png"
     plt.savefig('../results/' + name)
+
+
+    
+
+    
+
 

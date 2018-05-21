@@ -175,6 +175,7 @@ def fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy):
     fromOtherParentY = list(range(1,len(chromosomeX)+1))
         
     for gene in range(0, int(len(chromosomeX)/2)):
+        
         # child parent X
         # pick first item from shuffled list      
         randomGeneX = chromosomeX[0]
@@ -215,7 +216,7 @@ def fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy):
 def adaptiveMutation(individuals, env):
     for model in individuals:
         print(model.checkValidity(env))
-        
+
         # attempt to improve non valid model with hillclimber
         if model.checkValidity(env) == False:
             shadowModel = adapt(model)
