@@ -2,7 +2,7 @@ from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
 
-def hillClimber(env, iterations):
+def hillClimberNoCon(env, iterations):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []

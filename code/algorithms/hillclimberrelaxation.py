@@ -2,7 +2,7 @@ from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
 
-def hillClimber(env, iterations, moves):
+def hillClimberRelax(env, iterations, moves):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
@@ -10,28 +10,29 @@ def hillClimber(env, iterations, moves):
     # run a random as a starting state
     boundModel = runRandom(env)
 
-    climberModel = boundModel
-
     # run the algorithm for the amount of iterations given
     for i in range(0, iterations):
-        
-        check = False
-        while check == False:
-            climbedModel = climberModel
-            for j in range(0, moves):
-                 climbedModel = climbHill(climbedModel)  
-            check = climbedModel.checkValidity(env)
+        climberModel = boundModel
 
-        # calculate the costs of the returned model
-        climbedModel.calculateCosts(env.distanceTable)
+  
+        climbedModel = climberModel
+        for j in range(0, moves):
+                modelClimbed = climbHill(climbedModel)  
 
-        # compare the costs to the bound state
-        if (climbedModel.cost < boundModel.cost):
+        # if the result is valid
+        if modelClimbed.checkValidity(env) == True:
 
-            # if costs is lower, set the new bound state
-            boundModel = climbedModel
+            # calculate the costs of the returned model
+            modelClimbed.calculateCosts(env.distanceTable)
 
-            # append lowest costs to the list for comparison    
+            # compare the costs to the bound state
+            if (modelClimbed.cost < boundModel.cost):
+
+                # if costs is lower, set the new bound state
+                boundModel = modelClimbed
+             
+        # regardless of whether a new best score is found,
+        # append lowest costs to the list for comparison    
         costs.append(boundModel.cost)
 
     # return the list of costs for plotting
