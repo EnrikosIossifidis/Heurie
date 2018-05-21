@@ -16,8 +16,11 @@ def hillClimber(env, iterations, trials):
 
         check = False
         while check == False:
+            climbedModel = climberModel
             for j in range(0, trials):
-                modelClimbed = climbHill(climberModel)  
+                print("j")
+                print(j)
+                modelClimbed = climbHill(climbedModel)  
             check = modelClimbed.checkValidity(env)
 
         # calculate the costs of the returned model

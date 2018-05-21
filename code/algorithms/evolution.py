@@ -144,6 +144,7 @@ def modelToChromosome(model):
     random.shuffle(chromosome)
     return chromosome
 
+# converts chromosome format to model class
 def chromosomeToModel(chromosome, env):
 
         # create the array of batteries with the id starting at 1
@@ -208,16 +209,13 @@ def fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy):
         for geneX in chromosomeXcopy:
             if (geneX[0] == housenr):
                 chromosomeChildY.append(geneX)        
-    # chromosomeChildX.sort(key=lambda tup: tup[0])
-
-      # adaptive mutation
-
 
     return chromosomeChildX, chromosomeChildY
 
 def adaptiveMutation(individuals, env):
     for model in individuals:
         print(model.checkValidity(env))
+        
         # attempt to improve non valid model with hillclimber
         if model.checkValidity(env) == False:
             shadowModel = adapt(model)

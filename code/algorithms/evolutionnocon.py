@@ -35,32 +35,11 @@ def evolutionNoCon(env, maxGenerations, popSize):
 
     return bestModel
 
-# def checkValidity(env, model):
-#     # print("houses per battery:")
-#     # for battery in model.modelBatteries:
-#     #     print(len(battery.houses))
-   
-#     for i in range(0, len(model.modelBatteries)):
-#         totCapHouses = 0
-#         for house in model.modelBatteries[i].houses:
-#             totCapHouses += house.cap
-#         # print("cap Battery")
-#         # print(env.batteries[i].maxCapacity)
-        
-#         # print("cap Houses")
-#         # print(totCapHouses)
-
-#         # break out of loop and return False if capacity of battery is exceeded
-#         if totCapHouses > env.batteries[i].maxCapacity:
-#             return False
-#     # if capacity is not exceeded in any battery, return True
-#     return True
-
 def generateInitialPop(env, popSize):
     population = []
     for i in range(0, popSize):
         population.append(runRandom(env))
-        # print("cost of population item " + str(i) + ": " + str(population[i].cost))
+
     return population
 
 # check if a new best (valid!) solution is found, store that one 
@@ -70,7 +49,6 @@ def searchForOptimum(population, bestModel, env):
     sortedPopulation = sorted(population, key=lambda x: x.cost, reverse=False)
 
     # check if lowest cost is low enough to be new best score
-
     if sortedPopulation[0].cost < bestModel.cost:
         # if so return best
         return sortedPopulation[0]
@@ -147,7 +125,7 @@ def selection(newGeneration, popSize):
     return selection
 
         
-# methods belong to reproduction
+# converts model class to chromosome format
 def modelToChromosome(model):
     chromosome = []*150
     for bat in model.modelBatteries:
@@ -157,6 +135,7 @@ def modelToChromosome(model):
     random.shuffle(chromosome)
     return chromosome
 
+# converts chromosome format to model class
 def chromosomeToModel(chromosome, env):
 
         # create the array of batteries with the id starting at 1
@@ -220,61 +199,9 @@ def fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy):
     for housenr in fromOtherParentY:            
         for geneX in chromosomeXcopy:
             if (geneX[0] == housenr):
-                chromosomeChildY.append(geneX)        
-    # chromosomeChildX.sort(key=lambda tup: tup[0])
-
-      # adaptive mutation
-
-
+                chromosomeChildY.append(geneX)       
     return chromosomeChildX, chromosomeChildY
 
-def adaptiveMutation(individuals, env):
-    for model in individuals:
-        print(model.checkValidity(env))
-        # attempt to improve non valid model with hillclimber
-        if model.checkValidity(env) == False:
-            shadowModel = adapt(model)
-            count = 0 
 
-            # as long as no better model is found:
-            while not shadowModel.checkValidity(env) == True and count < 1000:
-                count += 1
-                shadowModel = adapt(model)
-
-                # make three switches on the same model, check in between 
-                shortSwitchCount = 0
-                while not shadowModel.checkValidity(env) == True and shortSwitchCount < 10:
-                    shortSwitchCount += 1
-                    shadowModel = adapt(shadowModel)
-                    if shadowModel == True:
-                        print("Adapted to true!")
-                        model = shadowModel                              
-    return individuals
         
 
-def adapt(model):
-
-    # get the batteries from the model
-        batteries = model.modelBatteries
-
-        # get a random battery
-        randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
-
-        # set the upperbounds for the houses randomizer
-        setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
-        setUpperboundBattery2 = len(batteries[randomBatteries[1]].houses)
-
-        # get a random house
-        randomHouses = (random.randint(0, (setUpperboundBattery1 - 1)), random.randint(0, (setUpperboundBattery2 - 1)))
-
-        # get the houses on the random places
-        house1 = batteries[randomBatteries[0]].houses[randomHouses[0]]
-        house2 = batteries[randomBatteries[1]].houses[randomHouses[1]]
-
-        # switch the houses with each other
-        batteries[randomBatteries[0]].houses[randomHouses[0]] = house2
-        batteries[randomBatteries[1]].houses[randomHouses[1]] = house1
-
-        # return the model
-        returnModel = Model(batteries)
-        return returnModel
