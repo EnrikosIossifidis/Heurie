@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from classes.model import Model
 
 class Environment:
     
@@ -81,4 +82,13 @@ class Environment:
             distancetable = np.vstack([distancetable, row])
 
         return(distancetable)
+
+    def createModelBatteries(self, batteries):
+
+        modelBatteries = []
+        
+        for i in range (0, len(batteries)):
+            modelBatteries.append(Model.Battery(i+1))
+
+        return modelBatteries
 

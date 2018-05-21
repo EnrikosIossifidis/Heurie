@@ -7,7 +7,7 @@ import numpy as np
 def depthFirstBnB(model, env):
 
     # create the array of batteries for model
-    modelBatteries = createModelBatteries(env.batteries)
+    modelBatteries = env.createModelBatteries(env.batteries)
 
     # initialize algorithm model
     depthFirstModel = Model(modelBatteries)
@@ -82,13 +82,3 @@ def checkCapacity(newNode, envBatteries, mBatteries, houses):
     
     if check == True:
         return True
-
-# Waarom heb je een functie geschreven om een lijst in een nieuwe lijst te zetten? Wat is hier precies het nut van?
-def createModelBatteries(batteries):
-
-    modelBatteries = []
-    
-    for i in range (0, len(batteries)):
-        modelBatteries.append(Model.Battery(i+1))
-
-    return modelBatteries
