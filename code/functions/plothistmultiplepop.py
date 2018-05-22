@@ -49,7 +49,7 @@ def plotHistMultiple(data, iterations, village, number):
         colors.append(tableau20[i+3])
 
     # make actual plot
-    plt.hist(arrays, bins = 15, color = colors, histtype='step', fill=False, label = legendDescription) 
+    plt.hist(arrays, bins = 15, color = colors, histtype='stepfilled', alpha = 0.5, fill=False, label = legendDescription) 
 
     # add legend
     handles, labels = ax.get_legend_handles_labels()

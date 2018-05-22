@@ -15,13 +15,12 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
     bestModel = runRandom(env)
     bestModel = searchForOptimum(population, bestModel, env)
 
-
     for i in range(0, maxGenerations):
 
         # create children by crossover
         children = []
         for j in range(0, birthRate):
-            children += reproduce(population, env, parentDominance)
+            children += reproduce(population, env, parentDominance, birthRate)
 
         # check if a new best model has been made (a valid one)
         bestModel = searchForOptimum(children, bestModel, env)
@@ -69,7 +68,7 @@ def searchForOptimum(population, bestModel, env):
     return bestModel
 
 # merge half of both chromosomes to create new chromosome (may result in invalid child)
-def reproduce(population, env, parentDominance):
+def reproduce(population, env, parentDominance, birthRate):
     newChildren = []
     partnerOptions = list(range(len(population)))
 
@@ -95,31 +94,48 @@ def reproduce(population, env, parentDominance):
         chromosomeY = modelToChromosome(yModel)
 
         # create children 
+        newChildren = createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env)       
+
+    return newChildren
+
+def createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env):
+    unviableChildren = []
+    for i in range(0, birthRate):
         chromosomeChildX, genesToCheckX = fertilize(chromosomeX, chromosomeY, parentDominance)
         chromosomeChildY, genesToCheckY = fertilize(chromosomeY, chromosomeX, parentDominance)
 
-        # convert child back to type model
-        childX = chromosomeToModel(chromosomeChildX, env)
-   
-        # childY = chromosomeToModel(chromosomeChildY, env)   
+        # convert children back to type model
+        childX = chromosomeToModel(chromosomeChildX, env)  
+        childY = chromosomeToModel(chromosomeChildY, env)  
 
-        # conflict resolvement after fertilization, make child viable 
-        # check in advance is not necessary, since without conflict resolvement child is not viable
-        newChild = resolveConflict(childX, genesToCheckX, env)
+        unviableChildren.append({'chromosome': childX, 'genesToCheck': genesToCheckX})
+        unviableChildren.append({'chromosome': childY, 'genesToCheck': genesToCheckY})
+    
+    viableChildren = []
+    for children in unviableChildren:
+        birth = makeViable(children['chromosome'], children['genesToCheck'], env)
+        viableChildren.append(birth)
+    
+    return viableChildren
 
-        # if conflict resolvement does not lead to a viable child, try again up to 100 times
-        count = 0
-        while newChild is None and count<1000:
-            count += 1
-            newChild = resolveConflict(childX, genesToCheckX, env)
 
-        # if conflict resolvement does not lead to a viable child, try again up to 100 times
-        if newChild is not None:
-            newChildren.append(newChild) 
-        else:
-            print("KILL")
+def makeViable(child, genesToCheck, env):
+    # conflict resolvement after fertilization, make child viable 
+    # check in advance is not necessary, since without conflict resolvement child is not viable
+    newChild = resolveConflict(child, genesToCheck, env)
 
-    return newChildren
+    # if conflict resolvement does not lead to a viable child, try again up to 100 times
+    count = 0
+    while newChild is None and count<1000:
+        count += 1
+        newChild = resolveConflict(child, genesToCheck, env)
+
+    # if conflict resolvement does not lead to a viable child, try again up to 100 times
+    if newChild is not None:
+        return newChild
+    else:
+        print("KILL") 
+
 
 def resolveConflict(child, genesToCheck, env):
     freeHouses = []
@@ -133,11 +149,9 @@ def resolveConflict(child, genesToCheck, env):
         if (temp_child.modelBatteries[gene[1]-1].checkOverload()):
             
             # remove house from battery
-
             for house in temp_child.modelBatteries[gene[1]-1].houses:
                 if house.idHouse == gene[0]:
                     temp_child.modelBatteries[gene[1]-1].houses.remove(house)
-
 
             # save houseID
             freeHouses.append(gene[0])
@@ -164,7 +178,7 @@ def resolveConflict(child, genesToCheck, env):
                 # print("index error")
                 # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
-    temp_child.printDistributionHouses()
+
     return temp_child
 
 # fitness proportionate selection
@@ -221,7 +235,6 @@ def chromosomeToModel(chromosome, env):
         for battery in newModel.modelBatteries:
             battery.setMaxCapacity(env)
 
-
         # fill list of houses belonging to battery in new model according to chromosome
         for gene in chromosome:
             for house in env.houses:
@@ -236,22 +249,27 @@ def chromosomeToModel(chromosome, env):
         return newModel
 
 def fertilize(chromosomeX, chromosomeY, parentDominance):
-    ## z = sorted(chromosomeX, key=lambda tup: tup[0])
-        
+    z = sorted(chromosomeX, key=lambda tup: tup[0])
+    print(z)
+    print(len(z))
+
+    chromTempX = copy.deepcopy(chromosomeX)
+    chromTempY = copy.deepcopy(chromosomeY)
+
     # initialize arrays 
     chromosomeChild = []*150
-    fromOtherParent = list(range(1,len(chromosomeX)+1))
+    fromOtherParent = list(range(1,len(chromTempX)+1))
         
     # copy first share of genes to child
-    random.shuffle(chromosomeX)
+    random.shuffle(chromTempX)
 
-    for gene in range(0, int(len(chromosomeX)/(1/parentDominance))):
-        
-        # pick first item from shuffled list 
-        randomGene = chromosomeX[gene]    
+    for geneIndex in range(0, int(len(chromTempX)/(1/parentDominance))):
+
+        # pick item from shuffled list 
+        randomGene = chromTempX[geneIndex]  
 
         # remove gene from the "still has to be added" list
-        # fromOtherParent[randomGene[0]-1] = 0   
+        # fromOtherParent[randomGene[0]-1] = 0  
         fromOtherParent.remove(randomGene[0])
 
         # add chosen gene to child         
@@ -262,7 +280,7 @@ def fertilize(chromosomeX, chromosomeY, parentDominance):
     fromOtherParentTuples = []
 
     for housenr in fromOtherParent:            
-        for geneY in chromosomeY:
+        for geneY in chromTempY:
             if (geneY[0] == housenr):
                 chromosomeChild.append(geneY)     
                 fromOtherParentTuples.append(geneY)              
