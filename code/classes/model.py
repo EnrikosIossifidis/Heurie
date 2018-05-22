@@ -11,7 +11,7 @@ class Model:
             self.batteryDistanceList = []
 
         def setMaxCapacity(self, env):
-            self.maxCapacity = env.batteries[self.id -1].maxCap
+            self.maxCapacity = env.batteries[self.idBattery -1].maxCapacity
 
         def checkCapacity(self, EnvBatteries, newHouse):
             self.curCapacity = 0
