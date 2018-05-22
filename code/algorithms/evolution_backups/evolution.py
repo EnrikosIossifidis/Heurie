@@ -2,10 +2,8 @@ from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
 import itertools
-import sys 
-import copy
 
-def evolution(env, maxGenerations, popSize, birthRate, parentDominance):    
+def evolution(env, maxGenerations, popSize):    
   
     # generate an initial population
     population = generateInitialPop(env, popSize)
@@ -15,13 +13,10 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
     bestModel = runRandom(env)
     bestModel = searchForOptimum(population, bestModel, env)
 
-
     for i in range(0, maxGenerations):
-
+        print(i)
         # create children by crossover
-        children = []
-        for j in range(0, birthRate):
-            children += reproduce(population, env, parentDominance)
+        children = reproduce(population, env)
 
         # check if a new best model has been made (a valid one)
         bestModel = searchForOptimum(children, bestModel, env)
@@ -34,8 +29,10 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
 
         # select the best based on fitness score to keep population size constant
         population = selection(newGeneration, popSize)
-
     
+    # search for optimum in final population
+    bestModel = searchForOptimum(population, bestModel, env)
+
     return bestModel
 
 def generateInitialPop(env, popSize):
@@ -61,7 +58,7 @@ def searchForOptimum(population, bestModel, env):
 
         # if model's costs are lower, check if solution is valid
         else: 
-            if model.checkValidity() == True:
+            if model.checkValidity(env) == True:
                 # if so, update bestModel
                 return model
 
@@ -69,7 +66,7 @@ def searchForOptimum(population, bestModel, env):
     return bestModel
 
 # merge half of both chromosomes to create new chromosome (may result in invalid child)
-def reproduce(population, env, parentDominance):
+def reproduce(population, env):
     newChildren = []
     partnerOptions = list(range(len(population)))
 
@@ -92,80 +89,20 @@ def reproduce(population, env, parentDominance):
 
         # convert parents to chromosomes
         chromosomeX = modelToChromosome(xModel)
+        chromosomeXcopy = modelToChromosome(xModel)
         chromosomeY = modelToChromosome(yModel)
+        chromosomeYcopy = modelToChromosome(yModel)
 
-        # create children 
-        chromosomeChildX, genesToCheckX = fertilize(chromosomeX, chromosomeY, parentDominance)
-        chromosomeChildY, genesToCheckY = fertilize(chromosomeY, chromosomeX, parentDominance)
+        chromosomeChildX, chromosomeChildY = fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy)
 
         # convert child back to type model
         childX = chromosomeToModel(chromosomeChildX, env)
-   
-        # childY = chromosomeToModel(chromosomeChildY, env)   
+        childY = chromosomeToModel(chromosomeChildY, env)    
 
-        # conflict resolvement after fertilization, make child viable 
-        # check in advance is not necessary, since without conflict resolvement child is not viable
-        newChild = resolveConflict(childX, genesToCheckX, env)
-
-        # if conflict resolvement does not lead to a viable child, try again up to 100 times
-        count = 0
-        while newChild is None and count<1000:
-            count += 1
-            newChild = resolveConflict(childX, genesToCheckX, env)
-
-        # if conflict resolvement does not lead to a viable child, try again up to 100 times
-        if newChild is not None:
-            newChildren.append(newChild) 
-        else:
-            print("KILL")
-
+        newChildren.append(childX) 
+        newChildren.append(childY) 
+        
     return newChildren
-
-def resolveConflict(child, genesToCheck, env):
-    freeHouses = []
-    random.shuffle(genesToCheck)
-
-    temp_child = copy.deepcopy(child)
-
-    # check which houses exceeds battery's maximum capacity, and disconnect those from battery
-    for gene in genesToCheck:
-        # if overloaded
-        if (temp_child.modelBatteries[gene[1]-1].checkOverload()):
-            
-            # remove house from battery
-
-            for house in temp_child.modelBatteries[gene[1]-1].houses:
-                if house.idHouse == gene[0]:
-                    temp_child.modelBatteries[gene[1]-1].houses.remove(house)
-
-
-            # save houseID
-            freeHouses.append(gene[0])
-
-    # assign free houses to battery with free capacity
-    for i in range(0, len(freeHouses)):
-        free = True
-        freeBatteries = list(range(len(temp_child.modelBatteries)))
-        while (free): 
-            try:        
-                batteryIndex = random.choice(freeBatteries)
-                house = env.houses[freeHouses[i]-1]
-                
-                # if capacity is enough to assign house
-                if (temp_child.modelBatteries[batteryIndex].checkCapacity(env.batteries, house)):
-                    # assign house
-                    temp_child.modelBatteries[batteryIndex].houses.append(house)
-                    free = False
-                else:
-                    freeBatteries.remove(batteryIndex)
-            except IndexError:
-                # if solution doesn't fit, try again in different order
-                # solution not garantueed?
-                # print("index error")
-                # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
-                return 
-    temp_child.printDistributionHouses()
-    return temp_child
 
 # fitness proportionate selection
 def selection(newGeneration, popSize):
@@ -204,6 +141,7 @@ def modelToChromosome(model):
         for house in bat.houses:
             chromosome.append([house.idHouse, bat.idBattery])
     
+    random.shuffle(chromosome)
     return chromosome
 
 # converts chromosome format to model class
@@ -211,67 +149,73 @@ def chromosomeToModel(chromosome, env):
 
         # create the array of batteries with the id starting at 1
         modelBatteries = []
-        for i in range (0, len(env.batteries)):
+        for i in range (0,len(env.batteries)):
             battery = Model.Battery(i+1)
             modelBatteries.append(battery)
 
          # create child model
         newModel = Model(modelBatteries)
 
-        for battery in newModel.modelBatteries:
-            battery.setMaxCapacity(env)
-
-
         # fill list of houses belonging to battery in new model according to chromosome
         for gene in chromosome:
-            for house in env.houses:
-                if house.idHouse == (gene[0]):
-                    corHouse = house
-                    newModel.modelBatteries[gene[1]-1].houses.append(corHouse)
-
+            house = env.houses[gene[0]-1]
+            newModel.modelBatteries[gene[1]-1].houses.append(house)
+        
         newModel.calculateCosts(env.distanceTable)
-
-        # print(sorted([x.idHouse for x in newModel.modelBatteries[0].houses], key=lambda x:x))
-   
         return newModel
 
-def fertilize(chromosomeX, chromosomeY, parentDominance):
-    ## z = sorted(chromosomeX, key=lambda tup: tup[0])
-        
-    # initialize arrays 
-    chromosomeChild = []*150
-    fromOtherParent = list(range(1,len(chromosomeX)+1))
-        
-    # copy first share of genes to child
-    random.shuffle(chromosomeX)
+def fertilize(chromosomeX, chromosomeXcopy, chromosomeY, chromosomeYcopy):
+    z = sorted(chromosomeX, key=lambda tup: tup[0])
+         
+    # copy first half of genes to child
+    chromosomeChildX = []*150
+    chromosomeChildY = []*150
 
-    for gene in range(0, int(len(chromosomeX)/(1/parentDominance))):
+    fromOtherParentX = list(range(1,len(chromosomeX)+1))
+    fromOtherParentY = list(range(1,len(chromosomeX)+1))
         
-        # pick first item from shuffled list 
-        randomGene = chromosomeX[gene]    
+    for gene in range(0, int(len(chromosomeX)/2)):
+        
+        # child parent X
+        # pick first item from shuffled list      
+        randomGeneX = chromosomeX[0]
+        chromosomeX.pop(0)              
 
         # remove gene from the "still has to be added" list
-        # fromOtherParent[randomGene[0]-1] = 0   
-        fromOtherParent.remove(randomGene[0])
-
+        fromOtherParentX[randomGeneX[0]-1] = 0   
         # add chosen gene to child         
-        chromosomeChild.append(randomGene)              
+        chromosomeChildX.append(randomGeneX)
+                
+        # child parent Y
+        randomGeneY = chromosomeY[0]
+        chromosomeY.pop(0)             
+
+        # remove gene from the "still has to be added" list
+        fromOtherParentY[randomGeneY[0]-1] = 0            
+        chromosomeChildY.append(randomGeneY)
+
 
     # copy second half to child
     # add the house nrs that are not included yet 
-    fromOtherParentTuples = []
-
-    for housenr in fromOtherParent:            
-        for geneY in chromosomeY:
+    # child parent X
+    for housenr in fromOtherParentX:            
+        for geneY in chromosomeYcopy:
             if (geneY[0] == housenr):
-                chromosomeChild.append(geneY)     
-                fromOtherParentTuples.append(geneY)              
+                chromosomeChildX.append(geneY)
+            
 
-    return chromosomeChild, fromOtherParentTuples
+    # chromosomeChildY = chromosomeChildX
+    # child parent Y
+    for housenr in fromOtherParentY:            
+        for geneX in chromosomeXcopy:
+            if (geneX[0] == housenr):
+                chromosomeChildY.append(geneX)        
+
+    return chromosomeChildX, chromosomeChildY
 
 def adaptiveMutation(individuals, env):
     for model in individuals:
-        # print(model.checkValidity(env))
+        print(model.checkValidity(env))
 
         # attempt to improve non valid model with hillclimber
         if model.checkValidity(env) == False:
@@ -279,7 +223,7 @@ def adaptiveMutation(individuals, env):
             count = 0 
 
             # as long as no better model is found:
-            while not shadowModel.checkValidity(env) == True and count < 100:
+            while not shadowModel.checkValidity(env) == True and count < 1000:
                 count += 1
                 shadowModel = adapt(model)
 

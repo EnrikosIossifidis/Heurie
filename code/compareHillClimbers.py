@@ -13,9 +13,9 @@ from functions.plotiterativesearch import plotIterativeSearch
 from classes.model import Model
 from classes.environment import Environment
 
-env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
+env = Environment(r"..\data\wijk1_huizen.csv", r"..\data\wijk1_batterijen.csv", 3)
 
-n = 100
+n = 10
 
 listOfHillClimber1 = []
 listOfHillClimber3 = []
@@ -23,7 +23,7 @@ listOfHillClimber5 = []
 listOfHillClimberNoCon = []
 listOfHillClimberRelax = []
 
-it = 1000
+it = 10000
 
 for i in range(0, n):
     print(i)
@@ -38,4 +38,4 @@ for i in range(0, n):
     modelRelax = hillClimber(env, it, 1)
     listOfHillClimberRelax.append(modelRelax.cost)
 
-plotHistMultiple([listOfHillClimber1, listOfHillClimber3, listOfHillClimber5, listOfHillClimberNoCon], ["HC 1 move (i = 1000)", "HC 3 moves (i = 1000)", "HC 5 moves (i = 1000)", "no constraints (1 move) (i = 1000)", "relaxation (i = 1000)"], 1, n, 3)
+plotHistMultiple([listOfHillClimber1, listOfHillClimber3, listOfHillClimber5, listOfHillClimberNoCon], ["HC 1 move (i = 10000)", "HC 3 moves (i = 10000)", "HC 5 moves (i = 10000)", "no constraints (1 move) (i = 1000)", "relaxation (i = 10000)"], 1, n, 3)

@@ -107,7 +107,7 @@ class Model:
         return True
     
     def printDistributionHouses(self):
-        print("profle per battery:")
+        print("profile per battery:")
         for battery in self.modelBatteries:
             print("amount of houses: ", end="")  
             print(len(battery.houses), end=", ")  
@@ -116,6 +116,7 @@ class Model:
             print("current capacity: ", end="")   
             battery.setCurCapacity()
             print(battery.curCapacity)
+        print("total houses = {}".format(sum([len(x.houses) for x in self.modelBatteries])))
 
 
 
