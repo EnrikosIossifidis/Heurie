@@ -61,7 +61,7 @@ def assignToRandomBattery(batIndexes, batteries, house, modelBatteries):
     randomBat = modelBatteries[batIndex]
 
     # if the capacity has enough room, assign house to battery 
-    if randomBat.checkCapacity(randomBat.idBattery, batteries, randomBat.houses, house) == True:
+    if randomBat.checkCapacity(batteries, house) == True:
         randomBat.houses.append(house)
         modelBatteries[batIndex].curCapacity += house.cap
 
