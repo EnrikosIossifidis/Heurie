@@ -1,5 +1,6 @@
 from classes.environment import Environment
 from classes.model import Model
+import numpy as np
 import random
 
 def kMeans(env, iterations):
@@ -8,7 +9,8 @@ def kMeans(env, iterations):
 
     for i in range(0, iterations):
         batteries = assignHousesToBatteries(kMeansEnv)
-        kMeansEnv = moveBatteriesToCenter(batteries, kMeansEnv)
+        # kMeansEnv = moveBatteriesToCenter(batteries, kMeansEnv)
+
     return kMeansEnv
 
 def assignHousesToBatteries(kMeansEnv):
@@ -16,49 +18,65 @@ def assignHousesToBatteries(kMeansEnv):
     toBeAssigned = list(range(1, 151))
 
     modelBatteries = kMeansEnv.createModelBatteries()
+    dt = createBatteryDistanceTable(kMeansEnv)
 
-    kMeansHouses = kMeansEnv.houses
-    random.shuffle(kMeansHouses)
-
-    for house in kMeansHouses:
+    for battery in kMeansEnv.batteries:
         batteryDistance = []
-        for battery in kMeansEnv.batteries:
-            batteryDistance.append([kMeansEnv.distanceTable[house.idHouse][battery.idBattery], battery.idBattery])
-            # print([env.distanceTable[house.idHouse][battery.idBattery], battery.idBattery])
         
-        if house.idHouse in toBeAssigned:
-            # print((toBeAssigned[house.idHouse-1]))
-            toBeAssigned[house.idHouse-1] = 0
-            nearestNeighbour = min(batteryDistance)
-            battery = modelBatteries[nearestNeighbour[1]-1]
-            if battery.checkCapacity(battery.idBattery, kMeansEnv.batteries, battery.houses, house):
-                print("Yay i fit!")
-                battery.houses.append(house)
-            else:
-                print("I don't fit")
-                
-                check = True
-                i = 1
-                
-                while (check):
-                    batteryDistance = sorted(batteryDistance)
-                    nearestNeighbour = batteryDistance[i]
-                    battery = modelBatteries[nearestNeighbour[1]-1]
-                    if battery.checkCapacity(battery.idBattery, kMeansEnv.batteries, battery.houses, house):
-                        print("Yay i fit in a different battery!")
-                        battery.houses.append(house)
-                        check = False
-                    else:
-                        print("second try wont fit neither")
-                        i = i + 1
-                        if (i == 4):
-                            print("i wont fit anywhere")
-                            check = False
+        for house in kMeansEnv.houses:
+            batteryDistance.append([dt[battery.idBattery][house.idHouse], house.idHouse])
+        batteryDistance = sorted(batteryDistance)
+        modelBatteries[battery.idBattery - 1].batteryDistanceList = batteryDistance
+  
+    i = 0
+    X = 0
+    while(toBeAssigned != list([0]*150)):
+        # print(i)
+        if i == 150:
+            i = 0
+            X += 1
+            print(toBeAssigned)
+            # print(i)
+            if X == 2:
+                toBeAssigned = list([0]*150)
+        for battery in modelBatteries:
+            # print(battery.batteryDistanceList)
+            nearestNeighbour = battery.batteryDistanceList[i]
+            print(battery.batteryDistanceList[54])
+            nearestNeighbourID = nearestNeighbour[1]
 
-            modelBatteries[nearestNeighbour[1]-1] = battery
+            # check in de lijst
+            if nearestNeighbourID in toBeAssigned:
+                print("Batterij en huis: ")
+                print(battery.idBattery)
+                print(nearestNeighbourID)
+                kMeansHouse = kMeansEnv.houses[nearestNeighbourID - 1]
+                
+                print("is check true?: ")
+                print(battery.checkCapacity(kMeansEnv.batteries, kMeansHouse))
+                if battery.checkCapacity(kMeansEnv.batteries, kMeansHouse):
+                    print("nearest neighbourID: ")
+                    print(nearestNeighbourID - 1)
+                    toBeAssigned[nearestNeighbourID - 1] = 0
+                    battery.houses.append(kMeansHouse)
+                    print("Fit in")
+                else:
+                    print("I wont fit")
+        i+=1
 
-    print(toBeAssigned)
-    return modelBatteries
+    for battery in modelBatteries:
+        houseIdList = []
+        for house in battery.houses:
+            houseIdList.append(house.idHouse)
+        print("Battery data: ") 
+        print(battery.idBattery)   
+        print(battery.curCapacity)
+        print(houseIdList)
+    house = kMeansEnv.houses[53]
+    print(house.cap)
+
+    # print(toBeAssigned)
+    # return modelBatteries
 
 def moveBatteriesToCenter(modelBatteries, kMeansEnv):
     envBatteries = kMeansEnv.batteries
@@ -87,3 +105,33 @@ def moveBatteriesToCenter(modelBatteries, kMeansEnv):
     
     kMeansEnv.batteries = envBatteries
     return kMeansEnv
+
+
+
+# rewrite k-means
+# nieuw distance table vanuit de batterij
+# sorteer distancetable op afstand
+# laat batterijen om de beurt een huis kiezen
+# check capaciteit
+# zodra een huis gekozen is streep het huis weg uit de lijst
+# doorgaan tot alle huizen zijn toegewezen en het klopt
+# Dan de 2e functie
+
+def createBatteryDistanceTable(kmeansEnv):
+        
+    # create column for each house
+    batteryDistanceTable = np.array(range(len(kmeansEnv.houses) + 1))
+
+    # append batteryId to left column
+    for battery in kmeansEnv.batteries:
+        row = [battery.idBattery]
+
+        # append distance to each house for every battery
+        for house in kmeansEnv.houses:
+            row.append(abs(battery.x-house.x)+abs(battery.y-house.y))
+
+        # convert list into numpy array and add each battery
+        np.asarray(row)
+        batteryDistanceTable = np.vstack([batteryDistanceTable, row])
+
+    return(batteryDistanceTable)
