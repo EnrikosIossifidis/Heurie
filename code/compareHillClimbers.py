@@ -15,7 +15,7 @@ from classes.environment import Environment
 
 env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
 
-it = 70
+n = 100
 
 listOfHillClimber1 = []
 listOfHillClimber3 = []
@@ -23,8 +23,9 @@ listOfHillClimber5 = []
 listOfHillClimberNoCon = []
 listOfHillClimberRelax = []
 
+it = 1000
 
-for i in range(0, it):
+for i in range(0, n):
     print(i)
     model1 = hillClimber(env, it, 1)
     listOfHillClimber1.append(model1.cost)
@@ -37,4 +38,4 @@ for i in range(0, it):
     modelRelax = hillClimber(env, it, 1)
     listOfHillClimberRelax.append(modelRelax.cost)
 
-plotHistMultiple([listOfHillClimber1, listOfHillClimber3, listOfHillClimber5, listOfHillClimberNoCon], ["HC 1 move", "HC 3 moves", "HC 5 moves", "no constraints (1 move)", "relaxation"], 1, it, 3)
+plotHistMultiple([listOfHillClimber1, listOfHillClimber3, listOfHillClimber5, listOfHillClimberNoCon], ["HC 1 move (i = 1000)", "HC 3 moves (i = 1000)", "HC 5 moves (i = 1000)", "no constraints (1 move) (i = 1000)", "relaxation (i = 1000)"], 1, n, 3)

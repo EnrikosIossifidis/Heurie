@@ -22,7 +22,7 @@ class Environment:
         self.batteries = self.importBatteries(batteries)
         self.houses = self.importHouses(houses)
         self.distanceTable = self.createDistanceTable()
-        self.village = "Village " + str(id)
+        self.village = id
 
     def importHouses(self, housesCsv):
 

@@ -16,7 +16,8 @@ def randomize(env):
     modelBatteries = []
 
     # create the array of batteries with the id starting at 1
-    for i in range (0,len(env.batteries)):
+    for i in range (0, len(env.batteries)):
+        maxCap = env.batteries[i].maxCapacity
         battery = Model.Battery(i+1)
         modelBatteries.append(battery)
 

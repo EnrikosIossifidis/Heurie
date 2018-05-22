@@ -6,14 +6,33 @@ class Model:
         def __init__(self, id):
             self.idBattery = id
             self.curCapacity = 0.0
+            self.maxCapacity = 0
             self.houses = list()
         
+        def setMaxCapacity(self, env):
+            self.maxCapacity = env.batteries[self.id -1].maxCap
+
         def checkCapacity(self, id, EnvBatteries, houses, newHouse):
             totalHouseCap = 0
             for house in houses:
                 totalHouseCap += house.cap 
             if totalHouseCap + newHouse.cap <= EnvBatteries[id - 1].maxCapacity:
                 return True
+        
+        def setCurCapacity(self):
+            totalHouseCap = 0
+            for house in self.houses:
+                totalHouseCap += house.cap 
+            self.curCapacity = totalHouseCap
+
+        def checkOverload(self):
+            totalHouseCap = 0
+            for house in self.houses:
+                totalHouseCap += house.cap 
+            if totalHouseCap >= self.maxCapacity:
+                return True
+            else:
+                return False
 
     def __init__(self, mBatteries):
         self.cost = 0
@@ -85,5 +104,16 @@ class Model:
         # if capacity is not exceeded in any battery, return True
         return True
     
+    def printDistributionHouses(self):
+        print("profle per battery:")
+        for battery in self.modelBatteries:
+            print("amount of houses: ", end="")  
+            print(len(battery.houses), end=", ")  
+            print("maximum capacity: ", end="")           
+            print(battery.maxCapacity, end=", ")
+            print("current capacity: ", end="")   
+            battery.setCurCapacity()
+            print(battery.curCapacity)
+
 
 
