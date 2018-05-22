@@ -83,6 +83,7 @@ class Model:
             # break out of loop and return False if capacity of battery is exceeded
             if totCapHouses > env.batteries[i].maxCapacity:
                 return False
+                
         # if capacity is not exceeded in any battery, return True
         return True
     
