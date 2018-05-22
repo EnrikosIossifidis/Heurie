@@ -13,6 +13,9 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
     bestModel = runRandom(env)
     bestModel = searchForOptimum(population, bestModel, env)
 
+    population[0].printDistributionHouses()
+    return
+
     for i in range(0, maxGenerations):
         print(i)
 
@@ -32,12 +35,14 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
 
         # select the best based on fitness score to keep population size constant
         population = selection(newGeneration, popSize)
+
     
     return bestModel
 
 def generateInitialPop(env, popSize):
     population = []
     for i in range(0, popSize):
+        model = runRandom(env)
         population.append(runRandom(env))
 
     return population
@@ -58,7 +63,7 @@ def searchForOptimum(population, bestModel, env):
 
         # if model's costs are lower, check if solution is valid
         else: 
-            if model.checkValidity(env) == True:
+            if model.checkValidity() == True:
                 # if so, update bestModel
                 return model
 
@@ -99,10 +104,13 @@ def reproduce(population, env, parentDominance):
         childX = chromosomeToModel(chromosomeChildX, env)
         childY = chromosomeToModel(chromosomeChildY, env)   
 
+        print("CHILD")
+        print(childX.checkValidity())
+
         # conflict resolvement after fertilization, make child viable 
         # check in advance is not necessary, since without conflict resolvement child is not viable
         newChild = resolveConflict(childX, genesToCheckX, env)
-        
+      
         # if conflict resolvement does not lead to a viable child, try again up to 100 times
         count = 0
         while (newChild is None and count<100):
@@ -117,11 +125,11 @@ def reproduce(population, env, parentDominance):
     return newChildren
 
 def resolveConflict(child, genesToCheck, env):
+    print("unresolved")
+    child.printDistributionHouses()
+
     freeHouses = []
     random.shuffle(genesToCheck)
-    # print("DISTRIBUTION CHILD")
-    # print("unresolved")
-    # child.printDistributionHouses()
 
     # check which houses exceeds battery's maximum capacity, and disconnect those from battery
     for gene in genesToCheck:
@@ -138,17 +146,20 @@ def resolveConflict(child, genesToCheck, env):
             # save houseID
             freeHouses.append(gene[0])
 
+    succes = True
     # assign free houses to battery with free capacity
     for i in range(0, len(freeHouses)):
         free = True
         freeBatteries = list(range(len(child.modelBatteries)))
         while (free): 
-            try:              
+            try:        
+                print(freeBatteries)      
                 batteryNr = random.choice(freeBatteries)
                 house = env.houses[freeHouses[i]-1]
                 
                 # if capacity is enough to assign house
-                if (child.modelBatteries[batteryNr].checkCapacity(batteryNr + 1, env.batteries, env.houses, house)):
+                if (child.modelBatteries[batteryNr].checkCapacity(env.batteries, house)):
+                    
                     # assign house
                     child.modelBatteries[batteryNr].houses.append(house)
                     free = False
@@ -157,9 +168,13 @@ def resolveConflict(child, genesToCheck, env):
             except IndexError:
                 # if solution doesn't fit, try again in different order
                 # solution not garantueed?
-                return 
-                
-    return child
+                succes = False 
+                return
+
+    if (succes):
+        print("resolved")
+        child.printDistributionHouses()
+        return child
 
 
 # fitness proportionate selection
@@ -207,11 +222,15 @@ def chromosomeToModel(chromosome, env):
         # create the array of batteries with the id starting at 1
         modelBatteries = []
         for i in range (0,len(env.batteries)):
-            battery = Model.Battery(i+1, env.batteries[i].maxCapacity)
+            battery = Model.Battery(i+1)
             modelBatteries.append(battery)
 
          # create child model
         newModel = Model(modelBatteries)
+
+        for battery in newModel.modelBatteries:
+            battery.setMaxCapacity(env)
+
 
         # fill list of houses belonging to battery in new model according to chromosome
         for gene in chromosome:
@@ -257,7 +276,7 @@ def fertilize(chromosomeX, chromosomeY, parentDominance):
 
 def adaptiveMutation(individuals, env):
     for model in individuals:
-        print(model.checkValidity(env))
+        # print(model.checkValidity(env))
 
         # attempt to improve non valid model with hillclimber
         if model.checkValidity(env) == False:
