@@ -2,13 +2,13 @@ from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
 
-def hillClimber(env, iterations, moves):
+def hillClimber(env, model, iterations, moves):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
 
     # run a random as a starting state
-    boundModel = runRandom(env)
+    boundModel = model
 
     climberModel = boundModel
 
@@ -47,20 +47,21 @@ def climbHill(model):
     # get a random battery
     randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
 
-    # set the upperbounds for the houses randomizer
-    setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
-    setUpperboundBattery2 = len(batteries[randomBatteries[1]].houses)
+    if batteries[randomBatteries[0]].houses != []:
+        # set the upperbounds for the houses randomizer
+        setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
 
-    # get a random house
-    randomHouses = (random.randint(0, (setUpperboundBattery1 - 1)), random.randint(0, (setUpperboundBattery2 - 1)))
+        # get a random house
+        randomHouseId = random.randint(0, (setUpperboundBattery1 - 1))
 
-    # get the houses on the random places
-    house1 = batteries[randomBatteries[0]].houses[randomHouses[0]]
-    house2 = batteries[randomBatteries[1]].houses[randomHouses[1]]
+        # get the houses on the random places
+        house1 = batteries[randomBatteries[0]].houses[randomHouseId]
 
-    # switch the houses with each other
-    batteries[randomBatteries[0]].houses[randomHouses[0]] = house2
-    batteries[randomBatteries[1]].houses[randomHouses[1]] = house1
+        # add the house to the other battery
+        batteries[randomBatteries[1]].houses.append(house1)
+        houses = batteries[randomBatteries[0]].houses
+        houses.pop(randomHouseId)
+        batteries[randomBatteries[0]].houses = houses
 
     # return the model
     returnModel = Model(batteries)

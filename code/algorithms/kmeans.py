@@ -12,14 +12,19 @@ def kMeans(env, iterations):
     for i in range(0, iterations):
         batteries = assignHousesToBatteries(kMeansEnv)
         kMeansEnv = moveBatteriesToCenter(batteries, kMeansEnv)
+    batteries = assignHousesToBatteries(kMeansEnv)
+
+    kMeansModel = Model(batteries)
 
     # return the altered environment
-    return kMeansEnv
+    return (kMeansEnv, kMeansModel)
 
 def assignHousesToBatteries(kMeansEnv):
 
+    lengthOfHouses = (len(kMeansEnv.houses))
+
     # create a list with a number for every house
-    toBeAssigned = list(range(1, 151))
+    toBeAssigned = list(range(1, (lengthOfHouses) +1))
 
     # get the batteries for a model and the distance table seen from the batteries
     modelBatteries = kMeansEnv.createModelBatteries()
@@ -44,10 +49,10 @@ def assignHousesToBatteries(kMeansEnv):
     x = 0
 
     # do this while the list is not empty
-    while(toBeAssigned != list([0]*150)):
+    while(toBeAssigned != list([0]*lengthOfHouses)):
 
         # to make sure that after one loop, we use the addWithoutChecking and start with 0 again
-        if i == 150:
+        if i == lengthOfHouses:
             i = 0
             x = 1
             # print(toBeAssigned)
@@ -63,14 +68,16 @@ def assignHousesToBatteries(kMeansEnv):
         i+=1
     
     # a print to check battery capacity and which house is attached to which battery
-    # print(toBeAssigned)
     # for battery in modelBatteries:
     #     houseIdList = []
     #     for house in battery.houses:
     #         houseIdList.append(house.idHouse)
+    #     battery.setMaxCapacity(kMeansEnv)
     #     print("Battery data: ") 
     #     print(battery.idBattery)   
+    #     print(len(battery.houses))
     #     print(battery.curCapacity)
+    #     print(battery.maxCapacity)
     #     print(houseIdList)
     #     print("---------------")
 
@@ -172,5 +179,6 @@ def addWithoutChecking(modelBatteries, kMeansEnv, toBeAssigned, i):
             kMeansHouse = kMeansEnv.houses[nearestNeighbourID - 1]
             toBeAssigned[nearestNeighbourID - 1] = 0
             battery.houses.append(kMeansHouse)
+            battery.curCapacity += kMeansHouse.cap
 
     return modelBatteries, toBeAssigned
