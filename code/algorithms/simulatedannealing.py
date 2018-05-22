@@ -69,8 +69,6 @@ def curTempLinear(beginTemp, endTemp, iteration, iterations):
 
 def curTempLog(constant, iteration):
     return (constant/math.log(1 + iteration))
-    # return maxTemp/(math.log(iteration + 1))
-    # return (maxTemp*(iterationTotal/maxTemp)**(iteration/iterationTotal))
 
 def curTempExp(beginTemp, endTemp, iteration, iterations):
     if endTemp == 0:
@@ -78,7 +76,8 @@ def curTempExp(beginTemp, endTemp, iteration, iterations):
     return (beginTemp*(endTemp/beginTemp)**(iteration/iterations))
     
 def curTempSigmoid(beginTemp, endTemp, iteration, iterations):
-    sigmoid = endTemp + (beginTemp - endTemp) / (1 + math.exp(0,3*(iteration - (iterations/2))))
+    a = 0.3
+    sigmoid = endTemp + (beginTemp - endTemp) / (1 + math.exp(a*(iteration - (iterations/2))))
     return sigmoid
 
 def acceptation(boundModel, modelClimbed, temp):
