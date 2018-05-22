@@ -106,5 +106,5 @@ def visVillage(env, model):
 
     # save the model into a png file in the results map
     name = model.name + ".png"
-    plt.savefig('../results/' + name)
+    plt.savefig('../results/personalresults/' + name)
 

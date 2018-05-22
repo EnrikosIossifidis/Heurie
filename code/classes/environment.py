@@ -83,11 +83,11 @@ class Environment:
 
         return(distancetable)
 
-    def createModelBatteries(self, batteries):
+    def createModelBatteries(self):
 
         modelBatteries = []
         
-        for i in range (0, len(batteries)):
+        for i in range (0, len(self.batteries)):
             modelBatteries.append(Model.Battery(i+1))
 
         return modelBatteries

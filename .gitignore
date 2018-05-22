@@ -3,3 +3,4 @@ __pycache__
 *.idea
 test.py
 results/personalresults/*.png
+results/personalresults/*.csv

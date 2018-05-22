@@ -8,15 +8,16 @@ class Model:
             self.curCapacity = 0.0
             self.maxCapacity = 0
             self.houses = list()
-        
+            self.batteryDistanceList = []
+
         def setMaxCapacity(self, env):
             self.maxCapacity = env.batteries[self.id -1].maxCap
 
-        def checkCapacity(self, id, EnvBatteries, houses, newHouse):
-            totalHouseCap = 0
-            for house in houses:
-                totalHouseCap += house.cap 
-            if totalHouseCap + newHouse.cap <= EnvBatteries[id - 1].maxCapacity:
+        def checkCapacity(self, EnvBatteries, newHouse):
+            self.curCapacity = 0
+            for house in self.houses:
+                self.curCapacity += house.cap 
+            if self.curCapacity + newHouse.cap <= EnvBatteries[self.idBattery - 1].maxCapacity:
                 return True
         
         def setCurCapacity(self):
@@ -101,6 +102,7 @@ class Model:
             # break out of loop and return False if capacity of battery is exceeded
             if totCapHouses > env.batteries[i].maxCapacity:
                 return False
+                
         # if capacity is not exceeded in any battery, return True
         return True
     
