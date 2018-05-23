@@ -1,6 +1,7 @@
 from classes.model import Model
 from algorithms.runrandom import runRandom
 import random
+import copy
 
 def hillClimber(env, model, iterations, moves):
 
@@ -9,8 +10,7 @@ def hillClimber(env, model, iterations, moves):
 
     # run a random as a starting state
     boundModel = model
-
-    climberModel = boundModel
+    climberModel = copy.deepcopy(boundModel)
 
     # run the algorithm for the amount of iterations given
     for i in range(0, iterations):
@@ -19,12 +19,11 @@ def hillClimber(env, model, iterations, moves):
             climbedModel = climberModel
             for j in range(0, moves):
                  climbedModel = climbHill(climbedModel)  
-            check = climbedModel.checkValidity(env)
+            check = climbedModel.checkValidity()
 
         # calculate the costs of the returned model
         climbedModel.calculateCosts(env.distanceTable)
-        print(boundModel.cost)
-        print(climbedModel.cost)
+
         # compare the costs to the bound state
         if (climbedModel.cost < boundModel.cost):
 
