@@ -31,7 +31,7 @@ def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, par
     # initialize variable to store best score
     # runRandom is just for initialization
     bestModel = runRandom(env)
-    bestModel = searchForOptimum(population, bestModel, env)
+    bestModel = searchForOptimum(population, bestModel, reportFileName, env)
 
     # loop through reproduction progress while scanning for solution
     for i in range(0, maxGenerations):
@@ -51,13 +51,7 @@ def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, par
         if children is not None:
 
             # check if a new best model has been made (a valid one)
-            bestModel = searchForOptimum(children, bestModel, env)
-
-            # inform user and write to csv
-            update = "New improvement detected: " + str(bestModel.cost)
-            writeProgress(reportFileName, message)
-            writeProgress(reportFileName, str(modelToChromosome(bestModel)))
-            bestModel.write(env)
+            bestModel = searchForOptimum(children, bestModel, reportFileName, env)
 
             # the new generation consists of both parents and children
             newGeneration = population + children
@@ -65,6 +59,7 @@ def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, par
             # select the best based on fitness score to keep population size constant
             population = selection(newGeneration, popSize)
     
+    writeProgress(reportFileName, "FINISH")
     return bestModel
 
 def generateInitialPop(env, popSize):
@@ -75,27 +70,31 @@ def generateInitialPop(env, popSize):
     return population
 
 # check if a new best (valid!) solution is found, store that one 
-def searchForOptimum(population, bestModel, env):
+def searchForOptimum(population, bestModel, reportFileName, env):
 
     # sort population by cost (lowest to highest)
     sortedPopulation = sorted(population, key=lambda x: x.cost, reverse=False)
 
-    # keep checking for bestModel in sortedPopulation unless cost is too high anyway
-    for model in sortedPopulation:
-        
-        # if the model cost exceeds upper bound the next once will so too
-        # therefore do no update bestModel
-        if model.cost > bestModel.cost:
-            return bestModel
+    # take individual with lowest score
+    possibleBestModel = sortedPopulation[0]
+    
+    # if the model cost exceeds upper bound the next once will so too
+    # therefore do no update bestModel
+    if possibleBestModel.cost < bestModel.cost:
 
-        # if model's costs are lower, check if solution is valid
-        else: 
-            if model.checkValidity() == True:
-                # if so, update bestModel
-                return model
+        # if model's costs are lower:
+        # inform user
+        message = "New improvement detected: " + str(possibleBestModel.cost)
+        writeProgress(reportFileName, message)
+        writeProgress(reportFileName, str(modelToChromosome(possibleBestModel, True)))
+        possibleBestModel.write(env)
+
+        # and update model
+        return possibleBestModel
 
     # if all models had a lower score, but none were valid
-    return bestModel
+    else:
+        return bestModel
 
 # merge half of both chromosomes to create new chromosome (may result in invalid child)
 def reproduce(population, env, parentDominance, birthsPerCouple):
@@ -120,8 +119,8 @@ def reproduce(population, env, parentDominance, birthsPerCouple):
         yModel = population[couple[1]]
 
         # convert parents to chromosomes
-        chromosomeX = modelToChromosome(xModel)
-        chromosomeY = modelToChromosome(yModel)
+        chromosomeX = modelToChromosome(xModel, False)
+        chromosomeY = modelToChromosome(yModel, False)
 
         # create children 
         newChildren = createChildren(chromosomeX, chromosomeY, parentDominance, birthsPerCouple, env)       
@@ -134,8 +133,7 @@ def createChildren(chromosomeX, chromosomeY, parentDominance, birthsPerCouple, e
         chromosomeChildY, genesToCheckY = fertilize(chromosomeY, chromosomeX, parentDominance)
 
         # convert children back to type model
-        childX = chromosomeToModel(chromosomeChildX, env)  
-
+        childX = chromosomeToModel(chromosomeChildX, env) 
         childY = chromosomeToModel(chromosomeChildY, env)  
 
         unviableChildren.append({'chromosome': childX, 'genesToCheck': genesToCheckX})
@@ -331,11 +329,14 @@ def fitnessCostRank(newGeneration):
     return fitnessList
         
 # converts model class to chromosome format
-def modelToChromosome(model):
+def modelToChromosome(model, sort):
     chromosome = []*150
     for bat in model.modelBatteries:
         for house in bat.houses:
             chromosome.append([house.idHouse, bat.idBattery])
+    
+    if sort == True:
+        chromosome = sorted(chromosome, key=lambda tup: tup[0])
     
     return chromosome
 
