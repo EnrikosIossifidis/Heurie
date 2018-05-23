@@ -12,7 +12,7 @@ def plotHistMultiple(data, iterations, village, number):
     legendDescription = []
     for sim in data:
         arrays.append(sim['results'])
-        legendDescription.append(str(sim['maxGen']) + ", " + str(sim['popSize']) + ", " + str(sim['birthRate']) + ", " + str(sim['pDom']) + ", " + str(sim['type']))
+        legendDescription.append(str(sim['maxGen']) + ", " + str(sim['popSize']) + ", " + str(sim['birthsPerCouple']) + ", " + str(sim['matingPartners']) + ", " + str(sim['pDom']) + ", " + str(sim['type']))
  
     # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),    
@@ -53,7 +53,7 @@ def plotHistMultiple(data, iterations, village, number):
 
     # add legend
     handles, labels = ax.get_legend_handles_labels()
-    lgd = ax.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5,-0.1), title="maxGen, popSize, birthRate, parentDom")
+    lgd = ax.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5,-0.1), title="maxGen, popSize, birthsPerCouple, matPartners, parentDom")
     # ax.grid('on')
 
     

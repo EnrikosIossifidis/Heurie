@@ -62,7 +62,7 @@ class Model:
         for house in listOfhouses:
             connections.append(house[1])
 
-        with open(r'results/personalresults/output_queue.csv', 'a', newline='') as f:
+        with open(r'output_queue.csv', 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(connections)
 

@@ -6,8 +6,12 @@ import itertools
 import sys 
 import copy
 
-def evolution(env, maxGenerations, popSize, birthRate, parentDominance):    
-  
+def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, parentDominance):   
+
+    if popSize < 2:
+        print("The population must at least have size 2")
+        exit(1)
+
     # generate an initial population
     population = generateInitialPop(env, popSize)
     
@@ -17,21 +21,23 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
     bestModel = searchForOptimum(population, bestModel, env)
 
     for i in range(0, maxGenerations):
-        print(i)
+        print("Giving birth to generation:", i)
 
         # create children by crossover
         children = []
-        for j in range(0, birthRate):
-            children += reproduce(population, env, parentDominance, birthRate)
+        for j in range(0, matingPartners):
+            children += reproduce(population, env, parentDominance, birthsPerCouple)
 
-        # check if a new best model has been made (a valid one)
-        bestModel = searchForOptimum(children, bestModel, env)
+        if children is not None:
 
-        # the new generation consists of both parents and children
-        newGeneration = population + children
+            # check if a new best model has been made (a valid one)
+            bestModel = searchForOptimum(children, bestModel, env)
 
-        # select the best based on fitness score to keep population size constant
-        population = selection(newGeneration, popSize)
+            # the new generation consists of both parents and children
+            newGeneration = population + children
+
+            # select the best based on fitness score to keep population size constant
+            population = selection(newGeneration, popSize)
     
     return bestModel
 
@@ -66,7 +72,7 @@ def searchForOptimum(population, bestModel, env):
     return bestModel
 
 # merge half of both chromosomes to create new chromosome (may result in invalid child)
-def reproduce(population, env, parentDominance, birthRate):
+def reproduce(population, env, parentDominance, birthsPerCouple):
     newChildren = []
     partnerOptions = list(range(len(population)))
 
@@ -92,13 +98,12 @@ def reproduce(population, env, parentDominance, birthRate):
         chromosomeY = modelToChromosome(yModel)
 
         # create children 
-        newChildren = createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env)       
-
+        newChildren = createChildren(chromosomeX, chromosomeY, parentDominance, birthsPerCouple, env)       
     return newChildren
 
-def createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env):
+def createChildren(chromosomeX, chromosomeY, parentDominance, birthsPerCouple, env):
     unviableChildren = []
-    for i in range(0, birthRate):
+    for i in range(0, birthsPerCouple):
         chromosomeChildX, genesToCheckX = fertilize(chromosomeX, chromosomeY, parentDominance)
         chromosomeChildY, genesToCheckY = fertilize(chromosomeY, chromosomeX, parentDominance)
 
@@ -113,8 +118,8 @@ def createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env):
     viableChildren = []
     for children in unviableChildren:
         birth = makeViable(children['chromosome'], children['genesToCheck'], env)
-
-        viableChildren.append(birth)
+        if birth is not None:
+            viableChildren.append(birth)
     return viableChildren
 
 
@@ -222,8 +227,7 @@ def selection(newGeneration, popSize):
                     newGeneration.remove(newGeneration[fitnessList[j][1] - 1])
                     fitnessList = fitnessCostRank(newGeneration)
                     found = True
-    for mo in selection:
-        print(mo.cost)
+
     return selection
 
 def fitnessLowHighScale(newGeneration):

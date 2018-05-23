@@ -97,7 +97,7 @@ def visVillage(env, model):
     plt.yticks(fontsize=8, color=tableau20[19])   
 
     # Make the title 
-    plt.title(env.village + " - Connections between houses and batteries", fontsize=14, color=tableau20[19])  
+    plt.title("Village " + str(env.village) + " - Connections between houses and batteries", fontsize=10, color=tableau20[19])  
             
     # plot the visualisation    
     plt.scatter(arrayBatteryX, arrayBatteryY, marker='8', c=arrayBatteryZ)
@@ -105,6 +105,6 @@ def visVillage(env, model):
     plt.axis()
 
     # save the model into a png file in the results map
-    name = model.name + ".png"
+    name = str(model.cost) + "_v" + str(env.village) + ".png"
     plt.savefig('../results/personalresults/' + name)
 

@@ -11,31 +11,32 @@ from functions.plotiterativesearch import plotIterativeSearch
 from classes.model import Model
 from classes.environment import Environment
 
-def runEvolution(env, iterations, maxGen, popSize, birthRate, parentDominance, type):
+def runEvolution(env, iterations, maxGen, popSize, birthsPerCouple, matingPartners, parentDominance, type):
     listOfEv = []
     for i in range(0, iterations):
-        model = evolution(env, maxGen, popSize, birthRate, parentDominance)
+        model = evolution(env, maxGen, popSize, birthsPerCouple, matingPartners, parentDominance)
         listOfEv.append(model.cost)
-        print(model.cost)
-    return {'results': listOfEv, 'maxGen': maxGen, 'popSize': popSize, 'birthRate': birthRate, 'pDom': parentDominance, 'type': type}  
+        model.write()
+        visVillage(env, model)
+    return {'results': listOfEv, 'maxGen': maxGen, 'popSize': popSize, 'birthsPerCouple': birthsPerCouple, 'matingPartners': matingPartners, 'pDom': parentDominance, 'type': type}  
 
 def testEvolution(env, plotNumber):
     ## input par should also be an array of dicts with run parameters
     data = []
 
     ## change parameters here to determine how the algoritm should be tested
-    iterations = 10
-    data.append(runEvolution(env, iterations, 10, 50, 1, 0.2, "no "))
-    data.append(runEvolution(env, iterations, 10, 100, 1, 0.2, "no "))
-    data.append(runEvolution(env, iterations, 10, 50, 1, 0.2, "no "))
+    iterations = 100
+    data.append(runEvolution(env, iterations, 10, 10, 1, 2, 0.5, "small tryout"))
+    # data.append(runEvolution(env, iterations, 5, 10, 1, 1, 0.5, "selection inverted still"))
+    # data.append(runEvolution(env, iterations, 2, 15, 1, 1, 0.5, "selection inverted still"))
 
     plotHistMultiple(data, iterations, env.village, plotNumber)
 
 ## start of test
 env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
 
- 
-testEvolution(env, 7)
+# env, plotnumber 
+testEvolution(env, 1)
 
 
 
