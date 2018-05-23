@@ -5,12 +5,25 @@ import random
 import itertools
 import sys 
 import copy
+import time
+import datetime
+import csv
 
 def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, parentDominance):   
-
+    
+    # check if population size is at least 2
+    # at a small popSize there's a risk of killing every child
     if popSize < 2:
         print("The population must at least have size 2")
-        exit(1)
+    
+    # create unique name for report
+    reportFileName = "run_evolution_" + "v" + str(env.village) + "_" + str(int(time.time())) + ".csv"
+
+    # print info
+    writeProgress(reportFileName, "NEW RUN")
+    writeProgress(reportFileName, "Village " + str(env.village))
+    info = "maxGen = " + str(maxGenerations) + ", popSize = " + str(popSize) + ", birthsPerCouple = " + str(birthsPerCouple) + ", matingPartners = " + str(matingPartners) + ", parentDominance = " + str(parentDominance)
+    writeProgress(reportFileName, info)
 
     # generate an initial population
     population = generateInitialPop(env, popSize)
@@ -20,8 +33,15 @@ def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, par
     bestModel = runRandom(env)
     bestModel = searchForOptimum(population, bestModel, env)
 
+    # loop through reproduction progress while scanning for solution
     for i in range(0, maxGenerations):
-        print("Giving birth to generation:", i)
+
+        # print time
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        update = "At " + str(st) + " - giving birth to generation " + str(i)
+        writeProgress(reportFileName, update)
+        
 
         # create children by crossover
         children = []
@@ -32,6 +52,12 @@ def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, par
 
             # check if a new best model has been made (a valid one)
             bestModel = searchForOptimum(children, bestModel, env)
+
+            # inform user and write to csv
+            update = "New improvement detected: " + str(bestModel.cost)
+            writeProgress(reportFileName, message)
+            writeProgress(reportFileName, str(modelToChromosome(bestModel)))
+            bestModel.write(env)
 
             # the new generation consists of both parents and children
             newGeneration = population + children
@@ -126,8 +152,6 @@ def createChildren(chromosomeX, chromosomeY, parentDominance, birthsPerCouple, e
 def makeViable(child, genesToCheck, env):
     # conflict resolvement after fertilization, make child viable 
     # check in advance is not necessary, since without conflict resolvement child is not viable
- 
-
     newChild = resolveConflict(child, genesToCheck, env)
 
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
@@ -139,22 +163,7 @@ def makeViable(child, genesToCheck, env):
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
     if newChild is not None:
         
-        # ha = modelToChromosome(newChild)
-        # z = sorted(ha, key=lambda tup: tup[0])
-        # print(z)
-        # for i in range(0, len(z)):
-        #     print(z[i][0], (i+1) )
-        #     if z[i][0] == (i+1):
-        #         a = 2 
-        #     else: 
-        #         print('false')
-
-
-        # exit(0)
         return newChild
-    else:
-        print("KILL") 
-
 
 def resolveConflict(child, genesToCheck, env):
     freeHouses = []
@@ -165,7 +174,6 @@ def resolveConflict(child, genesToCheck, env):
     # check which houses exceeds battery's maximum capacity, and disconnect those from battery
     for gene in genesToCheck:
  
-
         # if overloaded
         if (temp_child.modelBatteries[gene[1]-1].checkOverload()):
             
@@ -177,31 +185,51 @@ def resolveConflict(child, genesToCheck, env):
                     # save houseID
                     freeHouses.append(gene[0])
 
-    # assign free houses to battery with free capacity
+    # assign free houses to closest battery with free capacity
     for i in range(0, len(freeHouses)):
+
+        # retrieve house object to place
+        for house in env.houses: 
+            if house.idHouse == freeHouses[i]:
+                houseToPlace = house
+                
+        # rank preference for batteries of this house on distance
+        freeBatteries = []
+        for battery in temp_child.modelBatteries:
+
+            # retrieve distance to specific house
+            distance = env.distanceTable[houseToPlace.idHouse][battery.idBattery]
+
+            # put in list
+            freeBatteries.append([battery.idBattery, distance])
+        
+        # sort list of batteries to pick from on distance
+        freeBatteries = sorted(freeBatteries, key=lambda tup: tup[1])
+
+        # as long as house is not assigned:
         free = True
-        freeBatteries = list(range(len(temp_child.modelBatteries)))
         while (free): 
             try:        
-                batteryIndex = random.choice(freeBatteries)
-                for house in env.houses: 
-                    if house.idHouse == freeHouses[i]:
-                        houseToPlace = house
+                # pick first battery from options
+                batteryIndex = freeBatteries[0][0]-1
 
-                
-                # if capacity is enough to assign house
+                # if capacity of battery is enough to assign house
                 if (temp_child.modelBatteries[batteryIndex].checkCapacity(env.batteries, houseToPlace)):
+
                     # assign house
                     temp_child.modelBatteries[batteryIndex].houses.append(houseToPlace)
                     free = False
+
+                # otherwise remove battery from list of options
                 else:
-                    freeBatteries.remove(batteryIndex)
+                    freeBatteries.pop(0)
+
             except IndexError:
                 # if solution doesn't fit, try again in different order
                 # solution not garantueed?
-                # print("index error")
                 # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
+
     return temp_child
 
 # fitness proportionate selection
@@ -373,6 +401,14 @@ def fertilize(chromosomeX, chromosomeY, parentDominance):
                 fromOtherParentTuples.append(geneY)              
 
     return chromosomeChild, fromOtherParentTuples
+
+def writeProgress(reportFileName, message):
+    filePathName = "..\\results\personalresults\\" + reportFileName
+
+    with open(filePathName,'a', newline='') as f:
+        writer = csv.writer(f)
+        print(message)
+        writer.writerow([message])
 
         
 

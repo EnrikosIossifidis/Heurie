@@ -25,10 +25,10 @@ def testEvolution(env, plotNumber):
     data = []
 
     ## change parameters here to determine how the algoritm should be tested
-    iterations = 100
+    iterations = 10
     data.append(runEvolution(env, iterations, 10, 10, 1, 2, 0.5, "small tryout"))
-    # data.append(runEvolution(env, iterations, 5, 10, 1, 1, 0.5, "selection inverted still"))
-    # data.append(runEvolution(env, iterations, 2, 15, 1, 1, 0.5, "selection inverted still"))
+    data.append(runEvolution(env, iterations, 5, 10, 1, 1, 0.5, "selection inverted still"))
+    data.append(runEvolution(env, iterations, 2, 15, 1, 1, 0.5, "selection inverted still"))
 
     plotHistMultiple(data, iterations, env.village, plotNumber)
 
