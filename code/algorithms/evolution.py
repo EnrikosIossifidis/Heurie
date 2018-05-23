@@ -16,6 +16,7 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
     bestModel = searchForOptimum(population, bestModel, env)
 
     for i in range(0, maxGenerations):
+        print(i)
 
         # create children by crossover
         children = []
@@ -24,9 +25,6 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
 
         # check if a new best model has been made (a valid one)
         bestModel = searchForOptimum(children, bestModel, env)
-
-        # # try to make children valid with a hillclimber
-        # children = adaptiveMutation(children, env)
 
         # the new generation consists of both parents and children
         newGeneration = population + children
@@ -106,6 +104,7 @@ def createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env):
 
         # convert children back to type model
         childX = chromosomeToModel(chromosomeChildX, env)  
+
         childY = chromosomeToModel(chromosomeChildY, env)  
 
         unviableChildren.append({'chromosome': childX, 'genesToCheck': genesToCheckX})
@@ -114,14 +113,16 @@ def createChildren(chromosomeX, chromosomeY, parentDominance, birthRate, env):
     viableChildren = []
     for children in unviableChildren:
         birth = makeViable(children['chromosome'], children['genesToCheck'], env)
+
         viableChildren.append(birth)
-    
     return viableChildren
 
 
 def makeViable(child, genesToCheck, env):
     # conflict resolvement after fertilization, make child viable 
     # check in advance is not necessary, since without conflict resolvement child is not viable
+ 
+
     newChild = resolveConflict(child, genesToCheck, env)
 
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
@@ -132,6 +133,19 @@ def makeViable(child, genesToCheck, env):
 
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
     if newChild is not None:
+        
+        # ha = modelToChromosome(newChild)
+        # z = sorted(ha, key=lambda tup: tup[0])
+        # print(z)
+        # for i in range(0, len(z)):
+        #     print(z[i][0], (i+1) )
+        #     if z[i][0] == (i+1):
+        #         a = 2 
+        #     else: 
+        #         print('false')
+
+
+        # exit(0)
         return newChild
     else:
         print("KILL") 
@@ -145,16 +159,18 @@ def resolveConflict(child, genesToCheck, env):
 
     # check which houses exceeds battery's maximum capacity, and disconnect those from battery
     for gene in genesToCheck:
+ 
+
         # if overloaded
         if (temp_child.modelBatteries[gene[1]-1].checkOverload()):
             
             # remove house from battery
             for house in temp_child.modelBatteries[gene[1]-1].houses:
                 if house.idHouse == gene[0]:
-                    temp_child.modelBatteries[gene[1]-1].houses.remove(house)
 
-            # save houseID
-            freeHouses.append(gene[0])
+                    temp_child.modelBatteries[gene[1]-1].houses.remove(house)
+                    # save houseID
+                    freeHouses.append(gene[0])
 
     # assign free houses to battery with free capacity
     for i in range(0, len(freeHouses)):
@@ -163,12 +179,15 @@ def resolveConflict(child, genesToCheck, env):
         while (free): 
             try:        
                 batteryIndex = random.choice(freeBatteries)
-                house = env.houses[freeHouses[i]-1]
+                for house in env.houses: 
+                    if house.idHouse == freeHouses[i]:
+                        houseToPlace = house
+
                 
                 # if capacity is enough to assign house
-                if (temp_child.modelBatteries[batteryIndex].checkCapacity(env.batteries, house)):
+                if (temp_child.modelBatteries[batteryIndex].checkCapacity(env.batteries, houseToPlace)):
                     # assign house
-                    temp_child.modelBatteries[batteryIndex].houses.append(house)
+                    temp_child.modelBatteries[batteryIndex].houses.append(houseToPlace)
                     free = False
                 else:
                     freeBatteries.remove(batteryIndex)
@@ -178,7 +197,6 @@ def resolveConflict(child, genesToCheck, env):
                 # print("index error")
                 # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
-
     return temp_child
 
 # fitness proportionate selection
@@ -249,9 +267,6 @@ def chromosomeToModel(chromosome, env):
         return newModel
 
 def fertilize(chromosomeX, chromosomeY, parentDominance):
-    z = sorted(chromosomeX, key=lambda tup: tup[0])
-    print(z)
-    print(len(z))
 
     chromTempX = copy.deepcopy(chromosomeX)
     chromTempY = copy.deepcopy(chromosomeY)
@@ -269,7 +284,6 @@ def fertilize(chromosomeX, chromosomeY, parentDominance):
         randomGene = chromTempX[geneIndex]  
 
         # remove gene from the "still has to be added" list
-        # fromOtherParent[randomGene[0]-1] = 0  
         fromOtherParent.remove(randomGene[0])
 
         # add chosen gene to child         
@@ -287,54 +301,5 @@ def fertilize(chromosomeX, chromosomeY, parentDominance):
 
     return chromosomeChild, fromOtherParentTuples
 
-def adaptiveMutation(individuals, env):
-    for model in individuals:
-        # print(model.checkValidity(env))
-
-        # attempt to improve non valid model with hillclimber
-        if model.checkValidity(env) == False:
-            shadowModel = adapt(model)
-            count = 0 
-
-            # as long as no better model is found:
-            while not shadowModel.checkValidity(env) == True and count < 100:
-                count += 1
-                shadowModel = adapt(model)
-
-                # make three switches on the same model, check in between 
-                shortSwitchCount = 0
-                while not shadowModel.checkValidity(env) == True and shortSwitchCount < 10:
-                    shortSwitchCount += 1
-                    shadowModel = adapt(shadowModel)
-                    if shadowModel == True:
-                        print("Adapted to true!")
-                        model = shadowModel                              
-    return individuals
         
 
-def adapt(model):
-
-    # get the batteries from the model
-        batteries = model.modelBatteries
-
-        # get a random battery
-        randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
-
-        # set the upperbounds for the houses randomizer
-        setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
-        setUpperboundBattery2 = len(batteries[randomBatteries[1]].houses)
-
-        # get a random house
-        randomHouses = (random.randint(0, (setUpperboundBattery1 - 1)), random.randint(0, (setUpperboundBattery2 - 1)))
-
-        # get the houses on the random places
-        house1 = batteries[randomBatteries[0]].houses[randomHouses[0]]
-        house2 = batteries[randomBatteries[1]].houses[randomHouses[1]]
-
-        # switch the houses with each other
-        batteries[randomBatteries[0]].houses[randomHouses[0]] = house2
-        batteries[randomBatteries[1]].houses[randomHouses[1]] = house1
-
-        # return the model
-        returnModel = Model(batteries)
-        return returnModel
