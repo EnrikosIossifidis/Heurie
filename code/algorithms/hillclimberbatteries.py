@@ -2,8 +2,7 @@ from classes.model import Model
 from classes.environment import Environment
 from algorithms.runrandom import runRandom
 from algorithms.hillclimber import hillClimber
-from algorithms.depthfirst import createModelBatteries
-from algorithms.simulatedannealing import sigmoid
+from algorithms.simulatedannealing import curTempSigmoid
 from algorithms.simulatedannealing import acceptation
 from algorithms.simulatedannealing import curTempLinear
 from algorithms.simulatedannealing import curTempLog
@@ -29,7 +28,7 @@ def hillClimberBatteries(env, iterations, beginTemp, endTemp):
     while iteration <= iterations:
 
         # calculate current temp (linear, exponential, sigmoidal)
-        currentTemp = curTempLog(beginTemp, iteration)
+        currentTemp = curTempSigmoid(beginTemp, endTemp, iteration, iterations)
 
         # make random move for a new state and calculate costs with help from hillclimber
         neighbourEnv = pickRandomNeighbour(hillClimberEnv)

@@ -1,5 +1,6 @@
 from classes.model import Model
 from algorithms.runrandom import runRandom
+import math
 import random
 import itertools
 import sys 
@@ -31,7 +32,6 @@ def evolution(env, maxGenerations, popSize, birthRate, parentDominance):
 
         # select the best based on fitness score to keep population size constant
         population = selection(newGeneration, popSize)
-
     
     return bestModel
 
@@ -201,33 +201,102 @@ def resolveConflict(child, genesToCheck, env):
 
 # fitness proportionate selection
 def selection(newGeneration, popSize):
+    
     selection = []
 
-    # calculate sum of fitness
-    totalCost = 0
-    for model in newGeneration:
-        totalCost += model.cost
-
-    # create a array that indicates the intervals of probabilities
-    propList = []
-    previousProp = 0
-    for model in newGeneration:
-        prop = previousProp + model.cost/totalCost
-        propList.append(prop)
-        previousProp = prop
+    # choose fitness function: LowHighScale, TotalCostScale, CostRank
+    fitnessList = fitnessCostRank(newGeneration)
 
     # get random value and locate corresponding model
     for i in range(0, popSize):         
         value = random.random() 
-
         found = False
-        for j in range(0, len(propList)):
+
+        for j in range(0, len(fitnessList)):
             if found == False: 
-                value -= propList[j]
+                value -= fitnessList[j][0]
+
+                # append chosen model to new population and recalculate the probality values
                 if value < 0:
-                    selection.append(newGeneration[j])
-                    found = True; 
+                    selection.append(newGeneration[fitnessList[j][1] - 1])
+                    newGeneration.remove(newGeneration[fitnessList[j][1] - 1])
+                    fitnessList = fitnessCostRank(newGeneration)
+                    found = True
+    for mo in selection:
+        print(mo.cost)
     return selection
+
+def fitnessLowHighScale(newGeneration):
+  
+    # calculate sum of fitness
+    populationCost = []
+    
+    for i in range(0, len(newGeneration)):
+        populationCost.append([newGeneration[i].cost, i + 1])
+
+    # array of probalility intervals, normalized in range lowest and highest cost
+    newGenLowHigh = [sorted(populationCost)[0][0], sorted(populationCost)[-1][0]]
+    totalFitnessScore = 0
+    fitnessList = []
+
+    # calculate fitness for each model
+    for i in range(0, len(populationCost)):
+        fitness1 = 1 - (populationCost[i][0] - newGenLowHigh[0]) / (newGenLowHigh[1] - newGenLowHigh[0])
+        populationCost[i][0] = fitness1
+        totalFitnessScore += fitness1
+        fitnessList.append(populationCost[i])
+    
+    # recalculate fitness so that scores are between 0 and 1
+    fitnessList[0][0] = fitnessList[0][0] / totalFitnessScore
+    for j in range(1, len(fitnessList)):
+        fitnessList[j][0] = fitnessList[j - 1][0] + (fitnessList[j][0] / totalFitnessScore) 
+
+    return fitnessList
+
+def fitnessTotalCostScale(newGeneration):
+    
+    # calculate sum of fitness
+    populationCost = []
+    
+    for i in range(0, len(newGeneration)):
+        populationCost.append([newGeneration[i].cost, i + 1])
+
+    totalCost = 0
+    for model in populationCost:
+        totalCost += model[0]
+
+    # create a array that indicates the intervals of probabilities
+    fitnessList = []
+    previousProp = 0
+    for model in populationCost:
+        prop = previousProp + model/totalCost
+        fitnessList.append(prop)
+        previousProp = prop
+    
+    return fitnessList
+
+def fitnessCostRank(newGeneration):
+    
+    # calculate scores with either CostScale or LowHighScale
+    chromosomeFitnesses = fitnessTotalCostScale(newGeneration)
+    length = len(chromosomeFitnesses)
+    totalranks = 0
+    fitnessList = []
+
+    # calculate fitness of each model by subtracting cullumative element
+    for i in range(0, length):
+        if i == 0:
+            fitnessList.append([chromosomeFitnesses[i][0] - chromosomeFitnesses[i][0], i + 1])
+        fitnessList.append([chromosomeFitnesses[i][0] - chromosomeFitnesses[i - 1][0], i + 1])
+        totalranks += i
+
+    # recalculate models so that the scores fit between 0 and 1
+    fitnessList[0][0] = fitnessList[0][0] / totalranks
+    for k in range(1, length):
+        fitnessList[k][0] = fitnessList[k - 1][0] + (1 - ((k + 1) / totalranks))
+    
+    # total value fitnessList == population - 1 because the worst model is value 0
+    return fitnessList
         
 # converts model class to chromosome format
 def modelToChromosome(model):
