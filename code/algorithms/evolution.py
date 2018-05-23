@@ -14,7 +14,7 @@ def evolution(env, maxGenerations, popSize, birthsPerCouple, matingPartners, par
 
     # generate an initial population
     population = generateInitialPop(env, popSize)
-    
+     
     # initialize variable to store best score
     # runRandom is just for initialization
     bestModel = runRandom(env)
@@ -132,7 +132,7 @@ def makeViable(child, genesToCheck, env):
 
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
     count = 0
-    while newChild is None and count<1000:
+    while newChild is None and count<300:
         count += 1
         newChild = resolveConflict(child, genesToCheck, env)
 

@@ -47,7 +47,7 @@ class Model:
     def printResult(self):
         print("cost of cables in " + self.name + " = " + str(self.cost))
     
-    def write(self):
+    def write(self, env):
         listOfhouses = []*150
         for bat in self.modelBatteries:
             for house in bat.houses:
@@ -62,7 +62,8 @@ class Model:
         for house in listOfhouses:
             connections.append(house[1])
 
-        with open(r'output_queue.csv', 'a', newline='') as f:
+        filename = "..\\results\personalresults\\" + "v" + str(env.village) + "_output.csv"
+        with open(filename,'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(connections)
 
