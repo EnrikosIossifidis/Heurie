@@ -14,7 +14,7 @@ def hillClimber(env, model, iterations, chooseConstraints, mutation, moves):
 
     # run the algorithm for the amount of iterations given
     for i in range(0, iterations):
-        climbedModel = chooseClimbModel(chooseConstraints, climberModel, mutation, iterations)
+        climbedModel = chooseClimbModel(chooseConstraints, climberModel, mutation, moves)
 
         # calculate the costs of the returned model
         climbedModel.calculateCosts(env.distanceTable)
@@ -34,9 +34,16 @@ def hillClimber(env, model, iterations, chooseConstraints, mutation, moves):
     return boundModel
 
 def switchOrMove(mutation, climberModel):
+
+    # chooses which mutation you want to do
     if mutation == 1:
+
+        # moves 1 house to another battery
         return climbHillMoveHouse(climberModel)
+
     elif mutation == 2:
+
+        # switches two houses with each other
         return climbHillSwitchHouse(climberModel)
 
 def climbHillMoveHouse(model):
@@ -100,22 +107,26 @@ def climbHillSwitchHouse(model):
     return returnModel
 
 def allowPlacement(battery):
+
+    # allows only placements if the battery has less than 35 houses
     length = len(battery.houses)
     if length < 35:
         return True
     else:
-        # print("Not accepted in allow Placement")
         return False
 
 def allowSending(battery):
+
+    # allows sending a battery only if the battery has more than 25 houses
     length = len(battery.houses)
     if length > 25:
         return True
     else:
-        # print("Not accepted in allow Sending")
         return False    
 
 def chooseClimbModel(chooseConstraints, climberModel, mutation, moves):
+
+    # chooses if you want to climb with constraints or not
     if chooseConstraints == 1:
         return climbWithConstraints(climberModel, mutation, moves)
     elif chooseConstraints == 2:
