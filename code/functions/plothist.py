@@ -34,7 +34,7 @@ def plotHist(array, number, iterations, nameAlgorithm, village):
     plt.hist(array, bins = 15, color = tableau20[2], histtype='step', fill=False)
 
     # construct title and filename from input parameters
-    title = "Figure " + str(number) + ". Histogram of performance" + nameAlgorithm + ", n = " + str(iterations) + "\n\n (village: " + str(village) + ")"
+    title = "Figure " + str(number) + ". Histogram of performance, " + nameAlgorithm + ", n = " + str(iterations) + "\n\n (village: " + str(village) + ")"
     name = "fig" + str(number) + "_performance_histogram_" + str(iterations) + "_v" + str(village) + ".png"
 
     # show titles and axes

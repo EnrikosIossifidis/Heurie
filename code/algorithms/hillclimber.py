@@ -19,7 +19,7 @@ def hillClimber(env, model, iterations, moves):
             climbedModel = climberModel
             for j in range(0, moves):
                  climbedModel = climbHill(climbedModel)  
-            check = climbedModel.checkValidity(env)
+            check = climbedModel.checkValidity()
 
         # calculate the costs of the returned model
         climbedModel.calculateCosts(env.distanceTable)

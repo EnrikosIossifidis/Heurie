@@ -4,8 +4,6 @@ def plotHistMultiple(data, iterations, village, number):
     
 
     ## data[i] = {'results': [4098, 5000, 3800], 'maxGen': 10, 'popSize': 200, 'type': "two children per parent"}  
-    ## 
-
 
     # unpack data
     arrays = []
