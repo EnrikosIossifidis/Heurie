@@ -28,6 +28,7 @@ python main.py
 #### Instructions to run the evolutionary algorithm
 
 To run the evolutionary algorithm the following parameters are required as input: 
+
 (1) environment,
 (2) maximumGenerations, 
 (3) populationSize, 
