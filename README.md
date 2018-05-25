@@ -49,23 +49,23 @@ The hillclimber for the battery is the same as the simulated annealing.
 
 To run the hillclimber algorithms the following parameters are required as input:
 
-#### (1) iteration
+#### (1) iteration (int)
 
 Iteration is the amount of iterations the algorithm goes through. 
 
-#### (2) choose constraints
+#### (2) choose constraints (int)
 
 Choose constraints is the choice of if you want to run the algorithm with the constraint check or not.
 
-#### (3) choose mutation
+#### (3) choose mutation (int)
 
 Choose mutation is the choice of how the algorithm behaves. Does it switch two houses between batteries or does it moves a house from one battery to another.
 
-#### (4) amount of moves
+#### (4) amount of moves (int)
 
 Amount of moves the algorithm makes before checking the validity of the model.
 
-#### (5) cooling scheme (only for simulated annealing and hill climber for moving batteries)
+#### (5) cooling scheme (only for simulated annealing and hill climber for moving batteries) (int)
 
 Cooling scheme is the choice of what cooling scheme the simulated annealing follows.
 
