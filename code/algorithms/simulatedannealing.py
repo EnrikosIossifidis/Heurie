@@ -7,13 +7,13 @@ import math
 import time
 import datetime
 
-def simAnneal(env, iterations, chooseConstraint, mutation, moves, coolingSchedule):
+def simAnneal(env, model, iterations, chooseConstraint, mutation, moves, coolingSchedule):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
 
     # run a random as a starting state
-    boundModel = runRandom(env)
+    boundModel = model
     
     # initialize temperatures and constant for cooling schemes
     beginTemp = 1000
@@ -54,11 +54,11 @@ def simAnneal(env, iterations, chooseConstraint, mutation, moves, coolingSchedul
 def chooseCoolingSchedule(beginTemp, endTemp, iteration, iterations, coolingSchedule):
 
     # choose the chosen cooling schedule
-    if coolingSchedule == 0:
-        return curTempLinear(beginTemp, endTemp, iteration, iterations)
     if coolingSchedule == 1:
-        return curTempExp(beginTemp, endTemp, iteration, iterations)
+        return curTempLinear(beginTemp, endTemp, iteration, iterations)
     if coolingSchedule == 2:
+        return curTempExp(beginTemp, endTemp, iteration, iterations)
+    if coolingSchedule == 3:
         return curTempSigmoid(beginTemp, endTemp, iteration, iterations)
 
 def curTempLinear(beginTemp, endTemp, iteration, iterations):
