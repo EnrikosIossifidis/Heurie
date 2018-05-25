@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 
 def visVillage(env, model):
     
-     # These are the "Tableau 20" colors as RGB.    
+     # these are the "Tableau 20" colors as RGB    
     tableau20 = [(31, 119, 180), (255, 127, 14),    
               (152, 223, 138), (214, 39, 40),    
              (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),    
              (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),    
              (44, 160, 44), (188, 189, 34),(174, 199, 232), (0, 179, 226), (255,255,255), (24,24,24)]  
     
-    # Scale the RGB values to the [0, 1] range, which is the format matplotlib accepts.    
+    # scale the RGB values to the [0, 1] range, which is the format matplotlib accepts   
     for i in range(len(tableau20)):    
         r, g, b = tableau20[i]    
         tableau20[i] = (r / 255., g / 255., b / 255.) 
@@ -23,12 +23,12 @@ def visVillage(env, model):
     arrayBatteryY = list()
     arrayZ = list()
     
-    # Create color range for batteries
+    # create color range for batteries
     arrayBatteryZ = list()
     for i in range(0,len(env.batteries)):
         arrayBatteryZ.append(tableau20[i])
 
-    # Create a square plot, since that corresponds to the neighbourhood.   
+    # create a square plot, since that corresponds to the neighbourhood   
     fig = plt.figure(figsize=(6, 6))  
   
     # get the x and y coordinates for the houses
@@ -67,12 +67,11 @@ def visVillage(env, model):
         arrayBatteryX.append(battery.x)
         arrayBatteryY.append(battery.y)  
 
-    # set axes
-    # ax = plt.subplot(111)    
+    # set axes 
     plt.xticks(fontsize=8, color=tableau20[17])  
     plt.yticks(fontsize=8, color=tableau20[17])   
 
-    # Make the title 
+    # set the title 
     plt.title("Village " + str(env.village) + " - " + model.name + "\n Connections between houses and batteries" , fontsize=10, color=tableau20[17])  
             
     # plot the visualisation    
