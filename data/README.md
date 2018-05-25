@@ -1,2 +1,2 @@
 # Data
-Alle data in deze map is rechtstreeks gedownload vanaf de website [heuristieken](http://heuristieken.nl/wiki/index.php?title=SmartGrid).
+All data herein is directly downloaded from the website [heuristieken](http://heuristieken.nl/wiki/index.php?title=SmartGrid).
