@@ -78,13 +78,19 @@ def depthFirstBnB(env):
 
 def checkCapacity(newNode, envBatteries, mBatteries, houses):
     
+    # initialize list and check
     capacities = []
     check = False
+
+    # initialize length of lists 
     lenEnvBatteries = len(envBatteries)
     lenNewNode = len(newNode)
+
+    # make list as long as amount of batteries
     for i in range(0, lenEnvBatteries):
         capacities.append(0)
 
+    # check if node is legit
     for i in range(1, lenNewNode):
         capacities[newNode[i] - 1] += houses[i - 1].cap 
         if capacities[newNode[i] - 1] < envBatteries[newNode[i] - 1].maxCapacity:
@@ -97,12 +103,16 @@ def checkCapacity(newNode, envBatteries, mBatteries, houses):
 
 def makeModel(node, env):
   
+    # make model to calculate cost of node
     nodeModelBatteries = env.createModelBatteries()
     
+    # append each item of node to modelbatteries
     for i in range (1, len(node)):
         nodeModelBatteries[node[i] - 1].houses.append(env.houses[i - 1])
 
+    # create and return Model
     nodeModel = Model(nodeModelBatteries)
     nodeModel.calculateCosts(env.distanceTable)
+
     return nodeModel
     

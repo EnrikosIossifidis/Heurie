@@ -97,7 +97,7 @@ def visVillage(env, model):
     plt.yticks(fontsize=8, color=tableau20[19])   
 
     # Make the title 
-    plt.title("Village " + str(env.village) + " - Connections between houses and batteries", fontsize=10, color=tableau20[19])  
+    plt.title("Village " + str(env.village) + model.name, fontsize=10, color=tableau20[19])  
             
     # plot the visualisation    
     plt.scatter(arrayBatteryX, arrayBatteryY, marker='8', c=arrayBatteryZ)

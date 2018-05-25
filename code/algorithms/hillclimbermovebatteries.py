@@ -5,12 +5,13 @@ from algorithms.hillclimber import hillClimber
 from algorithms.hillclimber import chooseClimbModel
 from algorithms.simulatedannealing import chooseCoolingSchedule
 from algorithms.simulatedannealing import acceptation
+from functions.visualisation import visVillage
 from operator import itemgetter
 import random
 import math
 import numpy
 
-def hillClimberMoveBatteries(env, iterations, chooseConstraint, mutation, moves, coolingSchedule):
+def hillClimberMoveBatteries(env, iterations, beginTemp, chooseConstraint, mutation, moves, coolingSchedule):
 
     # keep list with scores and upperbound
     costs = []
@@ -20,11 +21,12 @@ def hillClimberMoveBatteries(env, iterations, chooseConstraint, mutation, moves,
 
     # initial hillclimber score after randomizing batteries
     randomizeBatteries(hillClimberEnv.batteries)  
-    firstModel = chooseClimbModel(2, climberModel, 2, 1)
+    hillClimberModel = runRandom(env)
+    firstModel = chooseClimbModel(2, hillClimberModel, 2, 1)
     firstModel.calculateCosts(hillClimberEnv.distanceTable)
     costs.append(firstModel)
 
-    beginTemp = 1000
+    beginTemp = beginTemp
     endTemp = 1
     iteration = 1
 
@@ -36,10 +38,9 @@ def hillClimberMoveBatteries(env, iterations, chooseConstraint, mutation, moves,
 
         # make random move for a new state and calculate costs with help from hillclimber
         neighbourEnv = pickRandomNeighbour(hillClimberEnv)
-        
-        neighbourModel = chooseClimbModel(chooseConstraint, climberModel, mutation, moves)
+        neighbourModel = runRandom(env)
+        neighbourModel = chooseClimbModel(chooseConstraint, neighbourModel, mutation, moves)
         neighbourModel.calculateCosts(neighbourEnv.distanceTable)
-        print(neighbourModel.cost)
         
         # calculate difference between new state and previous state
         deltaNodes = neighbourModel.cost - costs[-1].cost
@@ -65,8 +66,6 @@ def makeHillClimberPakackage(env, model, costs):
 
     # adjust model for plotting purposes
     model.listOfCosts = costs
-    model.setName("batteryHillClimber", 1)
-    model.printResult()
 
     # make list of required items for returning to main
     hillClimberBatteryList = [env, model]
