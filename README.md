@@ -36,7 +36,7 @@ To run the evolutionary algorithm the following parameters are required as input
 (5) matingPartners, 
 (6) parentDominance, 
 (7) mutationProbability, 
-(8) crossoverProbability, 
+(8) crossoverProbability,
 (9) conflictResolvement
 
 (1) environment (Environment)
