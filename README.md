@@ -48,32 +48,32 @@ The hillclimber for the battery is the same as the simulated annealing.
 ### Instructions to run the hill climbers and the simulated annealing
 
 To run the hillclimber algorithms the following parameters are required as input:
-(1) iteration
-(2) choose constraints
-(3) choose mutation
-(4) amount of moves
-(5) cooling scheme (only for simulated annealing and hill climber for moving batteries)
 
-(1) iteration is the amount of iterations the algorithm goes through. 
-(2) choose constraints is the choice of if you want to run the algorithm with the constraint check or not.
-(3) choose mutation is the choice of how the algorithm behaves. Does it switch two houses between batteries or does it moves a house from one battery to another.
-(4) amount of moves the algorithm makes before checking the validity of the model.
-(5) cooling scheme is the choice of what cooling scheme the simulated annealing follows.
+#### (1) iteration
+
+Iteration is the amount of iterations the algorithm goes through. 
+
+#### (2) choose constraints
+
+Choose constraints is the choice of if you want to run the algorithm with the constraint check or not.
+
+#### (3) choose mutation
+
+Choose mutation is the choice of how the algorithm behaves. Does it switch two houses between batteries or does it moves a house from one battery to another.
+
+#### (4) amount of moves
+
+Amount of moves the algorithm makes before checking the validity of the model.
+
+#### (5) cooling scheme (only for simulated annealing and hill climber for moving batteries)
+
+Cooling scheme is the choice of what cooling scheme the simulated annealing follows.
 
 
-#### Instructions to run the evolutionary algorithm
+
+### Instructions to run the evolutionary algorithm
 
 To run the evolutionary algorithm the following parameters are required as input: 
-
-(1) maximumGenerations, 
-
-(2) populationSize, 
-
-(3) mutationProbability, 
-
-(4) crossoverProbability,
-
-
 
 #### (1) maximumGenerations (Int)
 
