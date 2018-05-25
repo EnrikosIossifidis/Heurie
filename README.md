@@ -38,19 +38,20 @@ To run the evolutionary algorithm the following parameters are required as input
 (4) crossoverProbability,
 
 
-(1) maximumGenerations (Int)
+
+#### (1) maximumGenerations (Int)
 
 The number of generations, stop criterium. 
 
-(2) populationSize (Int)
+#### (2) populationSize (Int)
 
 The amount of individuals in the initial population. The size of the population is remains constant over time. 
 
-(3) mutationProbability (Float)
+#### (3) mutationProbability (Float)
 
 The probability that a mutation occurs during recombination. 
 
-(4) crossoverProbability (Float)
+#### (4) crossoverProbability (Float)
 
 The probability that crossover occurs, i.e. a parent's genome is combined with its partner's to form a new child. If crossover does not occur, the genome of the parent is taken up in the next population unchanged. 
 
