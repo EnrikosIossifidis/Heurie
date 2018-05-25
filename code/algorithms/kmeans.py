@@ -69,18 +69,18 @@ def assignHousesToBatteries(kMeansEnv):
     
     # a print to check battery capacity and which house is attached to which battery
     
-    # for battery in modelBatteries:
-    #     houseIdList = []
-    #     for house in battery.houses:
-    #         houseIdList.append(house.idHouse)
-    #     battery.setMaxCapacity(kMeansEnv)
-    #     print("Battery data: ") 
-    #     print(battery.idBattery)   
-    #     print(len(battery.houses))
-    #     print(battery.curCapacity)
-    #     print(battery.maxCapacity)
-    #     print(houseIdList)
-    #     print("---------------")
+    for battery in modelBatteries:
+        houseIdList = []
+        for house in battery.houses:
+            houseIdList.append(house.idHouse)
+        battery.setMaxCapacity(kMeansEnv)
+        print("Battery data: ") 
+        print(battery.idBattery)   
+        print(len(battery.houses))
+        print(battery.curCapacity)
+        print(battery.maxCapacity)
+        print(houseIdList)
+        print("---------------")
 
     return modelBatteries
 
