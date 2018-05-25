@@ -1,4 +1,5 @@
 from algorithms.runrandom import runRandom
+from algorithms.depthfirst import depthFirstBnB
 from algorithms.hillclimber import hillClimber
 from algorithms.simulatedannealing import simAnneal
 from algorithms.kmeans import kMeans
@@ -16,24 +17,26 @@ def menu(choice, env):
         doRandom(env, choice)
 
     elif choice == 2:
-        model = runRandom(env)
-        doHillClimber(env, model)
+        doDepthFirst(env)
 
     elif choice == 3:
         model = runRandom(env)
-        doSimAnneal(env, model)
+        doHillClimber(env, model)
 
     elif choice == 4:
-        doEvolution(env)
+        model = runRandom(env)
+        doSimAnneal(env, model)
 
     elif choice == 5:
-        doKmeans(env)
+        doEvolution(env)
 
     elif choice == 6:
+        doKmeans(env)
+
+    elif choice == 7:
         doHillClimberMoveBatteries(env)
 
 def doRandom(env, choice):
-
     print("How many times do you want to do a random?")
     iterations = int(input())
     costs = []
@@ -45,6 +48,12 @@ def doRandom(env, choice):
         visVillage(env, model)
 
     plotHistMultiple([costs], ["random"], choice, iterations, env.village)
+
+def doDepthFirst(env):
+    model = depthFirstBnB(env)
+    model.setName("Depth First", 0)
+    model.printResult()
+    visVillage(env, model)
 
 def doHillClimber(env, model):
     print("You are about to run a hill climber starting with a random starting model.") 
