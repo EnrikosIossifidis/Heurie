@@ -1,50 +1,24 @@
 import csv
 import os
-from algorithms.runrandom import runRandom
-from algorithms.depthfirst import depthFirstBnB 
-from functions.visualisation import visVillage
-from classes.model import Model
+import sys
+from functions.menu import menu
 from classes.environment import Environment
 
-env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
 
-for i in range (0,2):
-    model = runRandom(env)
-    model.setName("random", i)
-    model.printResult()
+try:
+    village = int(sys.argv[1])
+    if village == 1:
+        env = Environment(r"..\data\wijk1_huizen.csv", r"..\data\wijk1_batterijen.csv", 1)
+    elif village == 2:
+        env = Environment(r"..\data\wijk2_huizen.csv", r"..\data\wijk2_batterijen.csv", 2)
+    elif village == 3:
+        env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
+except IndexError:
+    sys.exit("Please use main.py with a village number. For example: main.py 1")
 
-    visVillage(env, model)
+print("What algorithm do you want to use? Type the number corresponding with the algorithm.")
+print("For getting the distribution of house to batteries - 1: Random, 2: Hill climber, 3: Simulated Annealing, 4:Evolution")
+print("For getting new locaties of the batteries - 5: K-means, 6: Hill climber on the batteries")
+choice = int(input())
 
-print(depthFirstBnB(model, env, dt))
-
-env = Environment(r"..\data\wijk3_huizen.csv", r"..\data\wijk3_batterijen.csv", 3)
-
-# test and visualise
-listOfRandom = []
-for i in range(0, 1000):
-    model = runRandom(env)
-    listOfRandom.append(model.cost)
-
-listOfHillClimber = []
-for i in range(0, 1000):
-    model = hillClimber(env, 1000)
-    listOfHillClimber.append(model.cost)
-
-
-# listOfEvolution = []
-# for i in range(0, 1000):
-#     model = evolution(env, 10, 10)
-#     listOfEvolution.append(model.cost)
-
-# plot histograms
-arrayMultiplePlot = []
-arrayMultiplePlot.append(listOfRandom)
-arrayMultiplePlot.append(listOfHillClimber)
-plotHistMultiple(arrayMultiplePlot, ["random", "hillclimber"], 4, 1000)
-plotHist(listOfRandom, 1, 1000, "random")
-plotHist(listOfHillClimber, 2, 1000, "hillclimber")
-# plotHist(listOfEvolution, 3, 10, "evolution")
-
-hillModel = hillClimber(env, 1000)
-plotIterativeSearch(hillModel.listOfCosts, 1, "hillclimber")
-
+menu(choice, env)
