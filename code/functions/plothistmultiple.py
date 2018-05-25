@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt  
 
-def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations, village):
+def plotHistMultiple(arrays, namesOfAlgorithms, number, iterations, village):
  
     # These are the "Tableau 20" colors as RGB.    
     tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),    
@@ -37,8 +37,7 @@ def plotHistMultiple(arrays, namesOfAlgoritms, number, iterations, village):
         colors.append(tableau20[i+3])
 
     # make actual plot
-    for array in arrays:
-        plt.hist(array, bins = 15, color = colors, histtype='stepfilled', alpha = 0.5, label = namesOfAlgoritms) 
+    plt.hist(arrays, bins = 15, histtype='stepfilled', alpha = 0.5, label = namesOfAlgorithms) 
 
     # add legend
     plt.legend(prop={'size': 10})

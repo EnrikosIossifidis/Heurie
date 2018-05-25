@@ -14,99 +14,99 @@ def evolution(env, maximumGenerations, populationSize, crossoversPerParent, mati
     # check if population size is at least 2
     # at a small popSize there's a risk of killing every child
     if populationSize < 2:
-        print("The population must at least have size 2")
-    
-    # create unique name for report
-    reportFileName = "run_evolution_" + "v" + str(env.village) + "_" + str(int(time.time())) + ".txt"
+        print("Search is not possible: the population must at least have size 2")  
+    else:  
+          
+        # create search id and log 
+        timeIdStart =  int(time.time())
+        reportFileName = "run_evolution_" + "v" + str(env.village) + "_" + str(timeIdStart) + ".txt"
+        writeProgress(reportFileName, "NEW RUN \nVillage " + str(env.village))
+        algorithmId = "maximumGenerations = " + str(maximumGenerations) + ", populationSize = " + str(populationSize) + ", crossoversPerParent = " + str(crossoversPerParent) + ", matingPartners = " + str(matingPartners) + ", parentDominance = " + str(parentDominance) + ", mutationProbability = " + str(mutationProbability) + ", crossoverProbability = " + str(crossoverProbability) + ", conflictResolvement = " + str(conflictResolvement)
+        writeProgress(reportFileName, algorithmId)
 
-    # print info
-    writeProgress(reportFileName, "NEW RUN \nVillage " + str(env.village))
-    info = "maxGen = " + str(maximumGenerations) + ", popSize = " + str(populationSize) + ", crossoversPerParent = " + str(crossoversPerParent) + ", matingPartners = " + str(matingPartners) + ", parentDominance = " + str(parentDominance) + ", mutationProb = " + str(mutationProbability) + ", crossoverProb = " + str(crossoverProbability) + ", conflictResolvement = " + str(conflictResolvement)
-    writeProgress(reportFileName, info)
-
-    # generate an initial population
-    population = generateInitialPop(env, populationSize)
-     
-    # initialize variable to store best score
-    # runRandom is just for initialization
-    bestModel = runRandom(env)
-    bestModel = searchForOptimum(population, bestModel, reportFileName, env)
-
-    # loop through reproduction progress while scanning for solution
-    for i in range(0, maximumGenerations):
-
-        # print time
-        ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        update = "At " + str(st) + " - giving birth to generation " + str(i) + "\npopSize: " + str(len(population))
-        writeProgress(reportFileName, update)
+        # generate an initial population
+        population = generateInitialPop(env, populationSize)
         
-        # create children by crossover
-        children = []
-        for j in range(0, matingPartners):
-            children += reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement)
-        print("children", len(children))
+        # search for best individual
+        bestModel = population[0]
+        bestModel = searchForOptimum(population, bestModel, reportFileName, env)
 
-        # check if
-        if children is not None:
+        # create new generations of children until maximum is reached 
+        for i in range(0, maximumGenerations):
+
+            # log
+            ts = time.time()
+            st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            update = "At " + str(st) + " - giving birth to generation " + str(i) + "\npopSize: " + str(len(population))
+            writeProgress(reportFileName, update)
+            
+            # create children by crossover
+            children = []
+            for j in range(0, matingPartners):
+                children += reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement)
+
             # check if empty
             if len(children) != 0:
 
                 # check if a new best model has been made (a valid one)
                 bestModel = searchForOptimum(children, bestModel, reportFileName, env)
 
-                # the new generation consists of both parents and children
-                newGeneration = children
-
                 # select the best based on fitness score to keep population size constant
-                population = selection(newGeneration, populationSize)
+                population = selection(children, populationSize)
 
             if len(children) == 0:
                 print('no new children')
+        
+        # log and save parameters to model
+        writeProgress(reportFileName, "FINISH")
+        bestModel.setName(algorithmId, timeIdStart)
 
-        if children is None:
-            print('no new children')
-    
-    writeProgress(reportFileName, "FINISH")
-    return bestModel
+        # return the best solution found
+        return bestModel
 
 def generateInitialPop(env, popSize):
+
+    # initialize population
     population = []
+
+    # append random individuals to population
     for i in range(0, popSize):
         population.append(runRandom(env))
 
     return population
 
-# check if a new best (valid!) solution is found, store that one 
+# checks if a new best (valid!) solution is found, store that one 
 def searchForOptimum(population, bestModel, reportFileName, env):
 
     # sort population by cost (lowest to highest)
     sortedPopulation = sorted(population, key=lambda x: x.cost, reverse=False)
 
-    # take individual with lowest score
+    # take individual with lowest cost
     possibleBestModel = sortedPopulation[0]
     
-    # if the model cost exceeds upper bound the next once will so too therefore do no update bestModel
+    # check if cost is lower than found previously
     if possibleBestModel.cost < bestModel.cost:
 
         # if model's costs are lower, inform the user
         message = "New improvement detected: " + str(possibleBestModel.cost)
         writeProgress(reportFileName, message)
+
+        # keep track of solutions in separate file 
         possibleBestModel.write(env)
 
-        # and update model
+        # update model
         return possibleBestModel
 
     # if all models had a lower score, but none were valid
     else:
+        # do no update model
         return bestModel
 
-# merge half of both genomes to create new genome (may result in invalid child)
-def reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement):
-    newChildren = []
-    partnerOptions = list(range(len(population)))
-
+# merges half of both genomes to create new genome 
+def reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement):  
+ 
     # randomly determine couples
+    partnerOptions = list(range(len(population)))
     partners = []
     for i in range(0, int(len(population)/2)):
         lenListX = list(range(len(partnerOptions)))
@@ -117,7 +117,8 @@ def reproduce(population, env, parentDominance, crossoversPerParent, mutationPro
         y = partnerOptions.pop(yDet)
         partners.append([x,y])
 
-    # make babies for every couple
+    # make children for every couple
+    newChildren = []
     for i in range (0, len(partners)):
         couple = partners[i]
         xModel = population[couple[0]] 
@@ -129,10 +130,12 @@ def reproduce(population, env, parentDominance, crossoversPerParent, mutationPro
 
         # create children 
         newChildren.extend(createChildren(genomeX, genomeY, parentDominance, crossoversPerParent, env, mutationProbability, crossoverProbability, conflictResolvement))       
+    
     return newChildren
 
 def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, mutationProb, crossoverProb, conflictResolvement):
-    # perform crossover
+    
+    # perform crossover, for both X and Y being dominant
     unviableChildren = []
     for i in range(0, crossoverPerParent):
         genomeChildX, genesToCheckX = crossover(genomeX, genomeY, parentDominance, crossoverProb)
@@ -153,6 +156,7 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
 
     # if conflict resolvement is enabled
     if conflictResolvement:
+
         # perform mututions to resolve conflicts with constraints
         viableChildren = []
         for children in unviableChildren:
@@ -162,6 +166,7 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
 
     # if conflict resolvement is not enabled
     elif not conflictResolvement:
+
         # convert not matching constraints
         viableChildren = []
         for children in unviableChildren:
@@ -174,21 +179,21 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
 
 def makeViable(child, genesToCheck, env):
 
-    # conflict resolvement after fertilization, make child viable check in advance is not necessary, since without conflict resolvement child is not viable
+    # conflict resolvement after fertilization
     newChild = resolveConflict(child, genesToCheck, env)
 
-    # if conflict resolvement does not lead to a viable child, try again up to 100 times
+    # if conflict resolvement does not lead to a viable child, try again up to 'count' times
     count = 0
-    while newChild is None and count<300:
+    while newChild is None and count<500:
         count += 1
         newChild = resolveConflict(child, genesToCheck, env)
 
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
-    if newChild is not None:
-        
+    if newChild is not None:        
         return newChild
 
 def resolveConflict(child, genesToCheck, env):
+
     freeHouses = []
     random.shuffle(genesToCheck)
 
@@ -196,7 +201,6 @@ def resolveConflict(child, genesToCheck, env):
 
     # check which houses exceeds battery's maximum capacity, and disconnect those from battery
     for gene in genesToCheck:
- 
 
         # if overloaded
         if (temp_child.modelBatteries[gene[1]-1].checkOverload()):
@@ -206,10 +210,11 @@ def resolveConflict(child, genesToCheck, env):
                 if house.idHouse == gene[0]:
 
                     temp_child.modelBatteries[gene[1]-1].houses.remove(house)
+
                     # save houseID
                     freeHouses.append(gene[0])
 
-    # assign free houses to battery with free capacity
+    # assign free houses to random battery with free capacity
     for i in range(0, len(freeHouses)):
         free = True
         freeBatteries = list(range(len(temp_child.modelBatteries)))
@@ -229,19 +234,16 @@ def resolveConflict(child, genesToCheck, env):
                 else:
                     freeBatteries.remove(batteryIndex)
             except IndexError:
+
                 # if solution doesn't fit, try again in different order
-                # solution not garantueed?
-                # print("index error")
-                # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
+
     return temp_child
 
 # fitness proportionate selection
 def selection(newGeneration, popSize):
     
     selection = []
-    print("population size before selection:", len(newGeneration))
-
 
     # choose fitness function: LowHighScale, TotalCostScale, CostRank
     fitnessList = fitnessLowHighScale(newGeneration)
@@ -258,11 +260,8 @@ def selection(newGeneration, popSize):
                 # append chosen model to new population and recalculate the probability values
                 if value < 0:
                     selection.append(newGeneration[fitnessList[j][1] - 1])
-                    # newGeneration.remove(newGeneration[fitnessList[j][1] - 1])
-                    # fitnessList = fitnessLowHighScale(newGeneration)
                     found = True
-                    
-    print("population size after selection:", len(selection))
+
     return selection
 
 def fitnessLowHighScale(newGeneration):
@@ -349,7 +348,7 @@ def modelToGenome(model, sort):
     
     return genome
 
-# convert object of type genome to model class
+# converts object of type genome to model class
 def genomeToModel(genome, env):
 
         # create the array of batteries with the id starting at 1
@@ -375,6 +374,7 @@ def genomeToModel(genome, env):
         return newModel
 
 def crossover(genomeX, genomeY, parentDominance, crossoverProb):
+
     # check if a crossover should occur for this pair
     if crossoverProb > random.random():
 
@@ -396,7 +396,7 @@ def crossover(genomeX, genomeY, parentDominance, crossoverProb):
             # add chosen gene to child         
             genomeChild.append(randomGene)              
 
-        # copy second half to child and add the house nrs that are not included yet 
+        # copy second half to child and add the houseIds that are not included yet 
         fromOtherParentTuples = []
 
         for housenr in fromOtherParent:            
@@ -410,6 +410,7 @@ def crossover(genomeX, genomeY, parentDominance, crossoverProb):
     else:
         return genomeX, []
 
+# writes logs to a file that is specific for this search 
 def writeProgress(reportFileName, message):
     filePathName = "..\\results\personalresults\\logs\\" + reportFileName
 
@@ -420,40 +421,37 @@ def writeProgress(reportFileName, message):
         print(message)
         writer.writerow([message])
 
+# takes a random house and assigns it to a random battery
 def mutation(model, env):
-    newModel = switchGenes(model)  
-    newModel.calculateCosts(env.distanceTable)
-    return newModel
 
-def switchGenes(model):
-
-    # get the batteries from themodel
+    # get the batteries from the model
     batteries = model.modelBatteries
 
     # get a random battery
-    randomBattery1 = random.randint(0, 4)
-    randomBattery2 = random.randint(0, 4)
+    randomBatteries =(random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
+    batterySendingHouse = batteries[randomBatteries[0]]
 
     # set the upperbounds for the houses randomizer
-    setUpperboundBattery1 = 0
-    setUpperboundBattery1 = len(batteries[randomBattery1].houses)
-    setUpperboundBattery2 = 0
-    setUpperboundBattery2 = len(batteries[randomBattery2].houses)
+    setUpperboundBattery1 = len(batterySendingHouse.houses)
 
     # get a random house
-    randomHouse1 = random.randint(0, (setUpperboundBattery1 - 1))
-    randomHouse2 = random.randint(0, (setUpperboundBattery2 - 1))
+    randomHouseId = random.randint(0, (setUpperboundBattery1 - 1))
 
     # get the houses on the random places
-    house1 = batteries[randomBattery1].houses[randomHouse1]
-    house2 = batteries[randomBattery2].houses[randomHouse2]
+    house1 = batterySendingHouse.houses[randomHouseId]
 
-    # switch the houses with each other
-    batteries[randomBattery1].houses[randomHouse1] = house2
-    batteries[randomBattery2].houses[randomHouse2] = house1
+    # get battery receiving the house
+    batteryReceivingHouse = batteries[randomBatteries[1]]
+
+    # add the house to the other battery
+    batteries[randomBatteries[1]].houses.append(house1)
+    houses = batterySendingHouse.houses
+    houses.pop(randomHouseId)
+    batteries[randomBatteries[0]].houses = houses
 
     # return the model
     returnModel = Model(batteries)
+    returnModel.calculateCosts(env.distanceTable)
     return returnModel
 
 
