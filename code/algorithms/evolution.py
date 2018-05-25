@@ -9,16 +9,11 @@ import time
 import datetime
 import csv
 
-def evolution(env, maximumGenerations, populationSize, crossoversPerParent, matingPartners, parentDominance, mutationProbability, crossoverProbability):   
+def evolution(env, maximumGenerations, populationSize, crossoversPerParent, matingPartners, parentDominance, mutationProbability, crossoverProbability, conflictResolvement):   
     
-<<<<<<< HEAD
     # check if population size is at least 2
     # at a small popSize there's a risk of killing every child
     if populationSize < 2:
-=======
-    # check if population size is at least 2 at a small popSize there's a risk of killing every child
-    if popSize < 2:
->>>>>>> 1b3da31d15cf8a3603cad3af588c8de4b07b552f
         print("The population must at least have size 2")
     
     # create unique name for report
@@ -49,7 +44,7 @@ def evolution(env, maximumGenerations, populationSize, crossoversPerParent, mati
         # create children by crossover
         children = []
         for j in range(0, matingPartners):
-            children += reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability)
+            children += reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement)
 
         # check if
         if children is not None:
@@ -106,7 +101,7 @@ def searchForOptimum(population, bestModel, reportFileName, env):
         return bestModel
 
 # merge half of both genomes to create new genome (may result in invalid child)
-def reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability):
+def reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement):
     newChildren = []
     partnerOptions = list(range(len(population)))
 
@@ -132,10 +127,10 @@ def reproduce(population, env, parentDominance, crossoversPerParent, mutationPro
         genomeY = modelToGenome(yModel, False)
 
         # create children 
-        newChildren = createChildren(genomeX, genomeY, parentDominance, crossoversPerParent, env, mutationProbability, crossoverProbability)       
+        newChildren = createChildren(genomeX, genomeY, parentDominance, crossoversPerParent, env, mutationProbability, crossoverProbability, conflictResolvement)       
     return newChildren
 
-def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, mutationProb, crossoverProb):
+def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, mutationProb, crossoverProb, conflictResolvement):
     # perform crossover
     unviableChildren = []
     for i in range(0, crossoverPerParent):
@@ -155,19 +150,23 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
             mutant = mutation(child['genome'], env)
             child['genome'] = mutant
 
-    # # perform mututions to resolve conflicts with constraints
-    # viableChildren = []
-    # for children in unviableChildren:
-    #     birth = makeViable(children['genome'], children['genesToCheck'], env)
-    #     if birth is not None:
-    #         viableChildren.append(birth)
+    # if conflict resolvement is enabled
+    if conflictResolvement:
+        # perform mututions to resolve conflicts with constraints
+        viableChildren = []
+        for children in unviableChildren:
+            birth = makeViable(children['genome'], children['genesToCheck'], env)
+            if birth is not None:
+                viableChildren.append(birth)
 
-    # # convert not mathcing constraints
-    viableChildren = []
-    for children in unviableChildren:
-        birth = children['genome']
-        if birth is not None:
-            viableChildren.append(birth)
+    # if conflict resolvement is not enabled
+    else:
+        # convert not matching constraints
+        viableChildren = []
+        for children in unviableChildren:
+            birth = children['genome']
+            if birth is not None:
+                viableChildren.append(birth)
 
     return viableChildren
 
@@ -197,6 +196,7 @@ def resolveConflict(child, genesToCheck, env):
     # check which houses exceeds battery's maximum capacity, and disconnect those from battery
     for gene in genesToCheck:
  
+
         # if overloaded
         if (temp_child.modelBatteries[gene[1]-1].checkOverload()):
             
@@ -205,55 +205,36 @@ def resolveConflict(child, genesToCheck, env):
                 if house.idHouse == gene[0]:
 
                     temp_child.modelBatteries[gene[1]-1].houses.remove(house)
-                    
                     # save houseID
                     freeHouses.append(gene[0])
 
-    # assign free houses to closest battery with free capacity
+    # assign free houses to battery with free capacity
     for i in range(0, len(freeHouses)):
-
-        # retrieve house object to place
-        for house in env.houses: 
-            if house.idHouse == freeHouses[i]:
-                houseToPlace = house
-                
-        # rank preference for batteries of this house on distance
-        freeBatteries = []
-        for battery in temp_child.modelBatteries:
-
-            # retrieve distance to specific house
-            distance = env.distanceTable[houseToPlace.idHouse][battery.idBattery]
-
-            # put in list
-            freeBatteries.append([battery.idBattery, distance])
-        
-        # sort list of batteries to pick from on distance
-        freeBatteries = sorted(freeBatteries, key=lambda tup: tup[1])
-
-        # as long as house is not assigned:
         free = True
+        freeBatteries = list(range(len(temp_child.modelBatteries)))
         while (free): 
             try:        
-                # pick first battery from options
-                batteryIndex = freeBatteries[0][0]-1
+                batteryIndex = random.choice(freeBatteries)
+                for house in env.houses: 
+                    if house.idHouse == freeHouses[i]:
+                        houseToPlace = house
 
-                # if capacity of battery is enough to assign house
+                
+                # if capacity is enough to assign house
                 if (temp_child.modelBatteries[batteryIndex].checkCapacity(env.batteries, houseToPlace)):
-
                     # assign house
                     temp_child.modelBatteries[batteryIndex].houses.append(houseToPlace)
                     free = False
-
-                # otherwise remove battery from list of options
                 else:
-                    freeBatteries.pop(0)
-
+                    freeBatteries.remove(batteryIndex)
             except IndexError:
-
                 # if solution doesn't fit, try again in different order
+                # solution not garantueed?
+                # print("index error")
+                # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
-
     return temp_child
+    
 # fitness proportionate selection
 def selection(newGeneration, popSize):
     
@@ -414,14 +395,8 @@ def crossover(genomeX, genomeY, parentDominance, crossoverProb):
             # add chosen gene to child         
             genomeChild.append(randomGene)              
 
-<<<<<<< HEAD
-        # copy second half to child
-        # add the house nrs that are not included yet 
+        # copy second half to child and add the house nrs that are not included yet 
         fromOtherParentTuples = []
-=======
-    # copy second half to child and add the house nrs that are not included yet 
-    fromOtherParentTuples = []
->>>>>>> 1b3da31d15cf8a3603cad3af588c8de4b07b552f
 
         for housenr in fromOtherParent:            
             for geneY in genomeY:
