@@ -1,3 +1,3 @@
 # Code
-Alle algorithmes staan in de map algoritmes.
-De datastructuur (alle classes) staan in de map classes en de hulpfuncties, zoals visualisation staan in de map functions.
+All algortihms are in the folder 'algorithms'.
+The data structure is filed in the folder 'classes'. The helpfunctions (e.g. visualization) are filed in de map 'functions'.

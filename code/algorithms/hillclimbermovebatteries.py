@@ -11,7 +11,7 @@ import random
 import math
 import numpy
 
-def hillClimberMoveBatteries(env, iterations, beginTemp, chooseConstraint, mutation, moves, coolingSchedule):
+def hillClimberMoveBatteries(env, iterations, chooseConstraint, mutation, moves, coolingSchedule):
 
     # keep list with scores and upperbound
     costs = []
@@ -26,7 +26,7 @@ def hillClimberMoveBatteries(env, iterations, beginTemp, chooseConstraint, mutat
     firstModel.calculateCosts(hillClimberEnv.distanceTable)
     costs.append(firstModel)
 
-    beginTemp = beginTemp
+    beginTemp = 1000
     endTemp = 1
     iteration = 1
 
