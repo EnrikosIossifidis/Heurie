@@ -31,7 +31,7 @@ def plotHist(array, number, iterations, nameAlgorithm, village):
     ax.get_xaxis().tick_bottom()    
     ax.get_yaxis().tick_left()    
 
-    plt.hist(array, bins = 15, color = tableau20[2], histtype='step', fill=False)
+    plt.hist(array, bins = 15, color = tableau20[3], histtype='step', fill=False)
 
     # construct title and filename from input parameters
     title = "Figure " + str(number) + ". Histogram of performance, " + nameAlgorithm + ", n = " + str(iterations) + "\n\n (village: " + str(village) + ")"

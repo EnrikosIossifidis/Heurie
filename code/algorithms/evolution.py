@@ -58,9 +58,7 @@ def evolution(env, maximumGenerations, populationSize, crossoversPerParent, mati
                 newGeneration = children
 
                 # select the best based on fitness score to keep population size constant
-                print(len(newGeneration))
                 population = selection(newGeneration, populationSize)
-                print(len(population))
 
             if len(children) == 0:
                 print('no new children')
@@ -154,12 +152,20 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
             mutant = mutation(child['genome'], env)
             child['genome'] = mutant
 
-    # perform mututions to resolve conflicts with constraints
+    # # perform mututions to resolve conflicts with constraints
+    # viableChildren = []
+    # for children in unviableChildren:
+    #     birth = makeViable(children['genome'], children['genesToCheck'], env)
+    #     if birth is not None:
+    #         viableChildren.append(birth)
+
+    # # convert not mathcing constraints
     viableChildren = []
     for children in unviableChildren:
-        birth = makeViable(children['genome'], children['genesToCheck'], env)
+        birth = children['genome']
         if birth is not None:
             viableChildren.append(birth)
+
     return viableChildren
 
 
@@ -245,11 +251,12 @@ def resolveConflict(child, genesToCheck, env):
                 return 
 
     return temp_child
-
 # fitness proportionate selection
 def selection(newGeneration, popSize):
     
     selection = []
+    print("population size before selection:", len(newGeneration))
+
 
     # choose fitness function: LowHighScale, TotalCostScale, CostRank
     fitnessList = fitnessLowHighScale(newGeneration)
@@ -269,7 +276,8 @@ def selection(newGeneration, popSize):
                     newGeneration.remove(newGeneration[fitnessList[j][1] - 1])
                     fitnessList = fitnessCostRank(newGeneration)
                     found = True
-
+                    
+    print("population size after selection:", len(selection))
     return selection
 
 def fitnessLowHighScale(newGeneration):
@@ -466,7 +474,8 @@ def switchGenes(model):
     # return the model
     returnModel = Model(batteries)
     return returnModel
-      
+
+
 
 
         

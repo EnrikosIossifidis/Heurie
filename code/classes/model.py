@@ -67,7 +67,7 @@ class Model:
             writer = csv.writer(f)
             writer.writerow(connections)
 
-        return connections
+ 
     
 
     def calculateCosts(self, dt):

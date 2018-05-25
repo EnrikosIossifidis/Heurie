@@ -68,6 +68,7 @@ def assignHousesToBatteries(kMeansEnv):
         i+=1
     
     # a print to check battery capacity and which house is attached to which battery
+    
     # for battery in modelBatteries:
     #     houseIdList = []
     #     for house in battery.houses:
