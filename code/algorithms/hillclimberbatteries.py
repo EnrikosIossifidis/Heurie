@@ -3,16 +3,14 @@ from classes.environment import Environment
 from algorithms.runrandom import runRandom
 from algorithms.hillclimber import hillClimber
 from algorithms.hillclimber import chooseClimbModel
-from algorithms.kmeans import assignHousesToBatteries
-from algorithms.simulatedannealing import curTempSigmoid
+from algorithms.simulatedannealing import chooseCoolingSchedule
 from algorithms.simulatedannealing import acceptation
-from algorithms.simulatedannealing import curTempLinear
 from operator import itemgetter
 import random
 import math
 import numpy
 
-def hillClimberBatteries(env, iterations, beginMaxScoreAccept):
+def hillClimberBatteries(env, iterations, chooseConstraint, mutation, moves, coolingSchedule):
 
     # keep list with scores and upperbound
     costs = []
@@ -26,7 +24,7 @@ def hillClimberBatteries(env, iterations, beginMaxScoreAccept):
     firstModel.calculateCosts(hillClimberEnv.distanceTable)
     costs.append(firstModel)
 
-    beginTemp = 0.5*beginMaxScoreAccept
+    beginTemp = 1000
     endTemp = 1
     iteration = 1
 
@@ -34,12 +32,12 @@ def hillClimberBatteries(env, iterations, beginMaxScoreAccept):
     while iteration <= iterations:
 
         # calculate current temp (linear, exponential, sigmoidal)
-        currentTemp = curTempLinear(beginTemp, endTemp, iteration, iterations)
+        currentTemp = chooseCoolingSchedule(beginTemp, endTemp, iteration, iterations, coolingSchedule)
 
         # make random move for a new state and calculate costs with help from hillclimber
         neighbourEnv = pickRandomNeighbour(hillClimberEnv)
         
-        neighbourModel = chooseClimbModel(2, climberModel, 2, 1)
+        neighbourModel = chooseClimbModel(chooseConstraint, climberModel, mutation, moves)
         neighbourModel.calculateCosts(neighbourEnv.distanceTable)
         print(neighbourModel.cost)
         
