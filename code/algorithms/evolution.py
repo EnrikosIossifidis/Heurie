@@ -21,7 +21,7 @@ def evolution(env, maximumGenerations, populationSize, crossoversPerParent, mati
 
     # print info
     writeProgress(reportFileName, "NEW RUN \nVillage " + str(env.village))
-    info = "maxGen = " + str(maximumGenerations) + ", popSize = " + str(populationSize) + ", crossoversPerParent = " + str(crossoversPerParent) + ", matingPartners = " + str(matingPartners) + ", parentDominance = " + str(parentDominance) + ", mutationProb = " + str(mutationProbability) + ", crossoverProb = " + str(crossoverProbability)
+    info = "maxGen = " + str(maximumGenerations) + ", popSize = " + str(populationSize) + ", crossoversPerParent = " + str(crossoversPerParent) + ", matingPartners = " + str(matingPartners) + ", parentDominance = " + str(parentDominance) + ", mutationProb = " + str(mutationProbability) + ", crossoverProb = " + str(crossoverProbability) + ", conflictResolvement = " + str(conflictResolvement)
     writeProgress(reportFileName, info)
 
     # generate an initial population
@@ -45,6 +45,7 @@ def evolution(env, maximumGenerations, populationSize, crossoversPerParent, mati
         children = []
         for j in range(0, matingPartners):
             children += reproduce(population, env, parentDominance, crossoversPerParent, mutationProbability, crossoverProbability, conflictResolvement)
+        print("children", len(children))
 
         # check if
         if children is not None:
@@ -127,7 +128,7 @@ def reproduce(population, env, parentDominance, crossoversPerParent, mutationPro
         genomeY = modelToGenome(yModel, False)
 
         # create children 
-        newChildren = createChildren(genomeX, genomeY, parentDominance, crossoversPerParent, env, mutationProbability, crossoverProbability, conflictResolvement)       
+        newChildren.extend(createChildren(genomeX, genomeY, parentDominance, crossoversPerParent, env, mutationProbability, crossoverProbability, conflictResolvement))       
     return newChildren
 
 def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, mutationProb, crossoverProb, conflictResolvement):
@@ -160,7 +161,7 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
                 viableChildren.append(birth)
 
     # if conflict resolvement is not enabled
-    else:
+    elif not conflictResolvement:
         # convert not matching constraints
         viableChildren = []
         for children in unviableChildren:
@@ -234,7 +235,7 @@ def resolveConflict(child, genesToCheck, env):
                 # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
     return temp_child
-    
+
 # fitness proportionate selection
 def selection(newGeneration, popSize):
     
@@ -254,11 +255,11 @@ def selection(newGeneration, popSize):
             if found == False: 
                 value -= fitnessList[j][0]
 
-                # append chosen model to new population and recalculate the probality values
+                # append chosen model to new population and recalculate the probability values
                 if value < 0:
                     selection.append(newGeneration[fitnessList[j][1] - 1])
-                    newGeneration.remove(newGeneration[fitnessList[j][1] - 1])
-                    fitnessList = fitnessCostRank(newGeneration)
+                    # newGeneration.remove(newGeneration[fitnessList[j][1] - 1])
+                    # fitnessList = fitnessLowHighScale(newGeneration)
                     found = True
                     
     print("population size after selection:", len(selection))
