@@ -80,7 +80,7 @@ def doEvolution(env):
     print("Please fill in the following parameters separated by a space: maximum amount of generations, population size, probability of mutation, crossover probability") 
     maximumGenerations, populationSize,  mutationProbability, crossoverProbability = input().split()
     
-    evoModel = evolution(env, int(maximumGenerations), int(populationSize), 1, 1, 0.5, int(mutationProbability), int(crossoverProbability), True)
+    evoModel = evolution(env, int(maximumGenerations), int(populationSize), 1, 1, 0.5, float(mutationProbability), float(crossoverProbability), True)
     name = str("Evolution " + str(maximumGenerations) + " " + str(populationSize) + " " + str(mutationProbability) + " " + str(crossoverProbability))
     evoModel.setName(name, 0)
     evoModel.printResult
