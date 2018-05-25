@@ -30,6 +30,7 @@ for i in range(0, 1000):
     model = hillClimber(env, 1000)
     listOfHillClimber.append(model.cost)
 
+
 # listOfEvolution = []
 # for i in range(0, 1000):
 #     model = evolution(env, 10, 10)

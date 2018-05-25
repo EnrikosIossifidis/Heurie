@@ -1,74 +1,68 @@
 from classes.model import Model
 from algorithms.runrandom import runRandom
+from algorithms.hillclimber import chooseClimbModel
+from algorithms.evolution import writeProgress
 import random
 import math
+import time
+import datetime
 
-def simAnneal(env, iterations, beginTemp, endTemp):
+def simAnneal(env, iterations, chooseConstraint, mutation, moves, coolingSchedule):
 
     # create a list with all the lowest costs per iteration for plotting purposes
     costs = []
 
     # run a random as a starting state
     boundModel = runRandom(env)
+    
+    # initialize temperatures and constant for cooling schemes
+    beginTemp = 1000
+    endTemp = 1
+    iteration = 1
 
     # run the algorithm for the amount of iterations given
-    for i in range(0, iterations):
+    for i in range(iteration, iterations):
+
+        # copy old Model
         climberModel = boundModel
-        modelClimbed = climbHill(climberModel)
+
+        # keep climbing until legit solution is found
+        modelClimber = chooseClimbModel(chooseConstraint, climberModel, mutation, moves)
 
         # calculate the costs of the returned model
-        modelClimbed.calculateCosts(env.distanceTable)
+        modelClimber.calculateCosts(env.distanceTable)
 
         # get the current temp
-        temp = curTempSigmoid(beginTemp, endTemp, i, iterations)
+        temp = chooseCoolingSchedule(beginTemp, endTemp, iteration, iterations, coolingSchedule)
 
         # get a random number between 0 and 1
         randomNum = random.random()
 
         # compare the result and anneal
-        if (acceptation(boundModel, modelClimbed, temp) > randomNum):
-            boundModel = modelClimbed
+        if (acceptation(boundModel, modelClimber, temp) > randomNum):
+            boundModel = modelClimber
 
         # append lowest costs to the list for comparison    
         costs.append(boundModel.cost)
 
+        iteration += 1
+
     # return the list of costs for plotting
     boundModel.listOfCosts = costs
-
     return boundModel
 
-def climbHill(model):
+def chooseCoolingSchedule(beginTemp, endTemp, iteration, iterations, coolingSchedule):
 
-    # get the batteries from themodel
-    batteries = model.modelBatteries
-
-    # get a random battery
-    randomBatteries = (random.randint(0, len(batteries)-1), random.randint(0, len(batteries)-1))
-
-    # set the upperbounds for the houses randomizer
-    setUpperboundBattery1 = len(batteries[randomBatteries[0]].houses)
-    setUpperboundBattery2 = len(batteries[randomBatteries[1]].houses)
-
-    # get a random house
-    randomHouses = (random.randint(0, (setUpperboundBattery1 - 1)), random.randint(0, (setUpperboundBattery2 - 1)))
-
-    # get the houses on the random places
-    house1 = batteries[randomBatteries[0]].houses[randomHouses[0]]
-    house2 = batteries[randomBatteries[1]].houses[randomHouses[1]]
-
-    # switch the houses with each other
-    batteries[randomBatteries[0]].houses[randomHouses[0]] = house2
-    batteries[randomBatteries[1]].houses[randomHouses[1]] = house1
-
-    # return the model
-    returnModel = Model(batteries)
-    return returnModel
+    # choose the chosen cooling schedule
+    if coolingSchedule == 0:
+        return curTempLinear(beginTemp, endTemp, iteration, iterations)
+    if coolingSchedule == 1:
+        return curTempExp(beginTemp, endTemp, iteration, iterations)
+    if coolingSchedule == 2:
+        return curTempSigmoid(beginTemp, endTemp, iteration, iterations)
 
 def curTempLinear(beginTemp, endTemp, iteration, iterations):
     return (beginTemp - (iteration*((beginTemp - endTemp)/iterations)))
-
-def curTempLog(constant, iteration):
-    return (constant/math.log(1 + iteration))
 
 def curTempExp(beginTemp, endTemp, iteration, iterations):
     if endTemp == 0:
@@ -81,6 +75,7 @@ def curTempSigmoid(beginTemp, endTemp, iteration, iterations):
     return sigmoid
 
 def acceptation(boundModel, modelClimbed, temp):
+
     if (modelClimbed.cost < boundModel.cost):
 
         # if the new costs are lower, return 1

@@ -2,15 +2,17 @@ from classes.model import Model
 from classes.environment import Environment
 from algorithms.runrandom import runRandom
 from algorithms.hillclimber import hillClimber
+from algorithms.hillclimber import chooseClimbModel
+from algorithms.kmeans import assignHousesToBatteries
 from algorithms.simulatedannealing import curTempSigmoid
 from algorithms.simulatedannealing import acceptation
 from algorithms.simulatedannealing import curTempLinear
-from algorithms.simulatedannealing import curTempLog
 from operator import itemgetter
 import random
 import math
+import numpy
 
-def hillClimberBatteries(env, iterations, beginTemp, endTemp):
+def hillClimberBatteries(env, iterations, beginMaxScoreAccept):
 
     # keep list with scores and upperbound
     costs = []
@@ -20,25 +22,32 @@ def hillClimberBatteries(env, iterations, beginTemp, endTemp):
 
     # initial hillclimber score after randomizing batteries
     randomizeBatteries(hillClimberEnv.batteries)  
-    costs.append(hillClimber(hillClimberEnv, 10, 1))
+    firstModel = chooseClimbModel(2, climberModel, 2, 1)
+    firstModel.calculateCosts(hillClimberEnv.distanceTable)
+    costs.append(firstModel)
 
+    beginTemp = 0.5*beginMaxScoreAccept
+    endTemp = 1
     iteration = 1
 
     # keep searching unit stopcriterium is reached
     while iteration <= iterations:
 
         # calculate current temp (linear, exponential, sigmoidal)
-        currentTemp = curTempSigmoid(beginTemp, endTemp, iteration, iterations)
+        currentTemp = curTempLinear(beginTemp, endTemp, iteration, iterations)
 
         # make random move for a new state and calculate costs with help from hillclimber
         neighbourEnv = pickRandomNeighbour(hillClimberEnv)
-        neighbourModel = hillClimber(neighbourEnv, 10, 1)
-
-        # calculate difference between new state and previous state 
+        
+        neighbourModel = chooseClimbModel(2, climberModel, 2, 1)
+        neighbourModel.calculateCosts(neighbourEnv.distanceTable)
+        print(neighbourModel.cost)
+        
+        # calculate difference between new state and previous state
         deltaNodes = neighbourModel.cost - costs[-1].cost
 
         # accept new state if lower costs or if loss is accepted by chance
-        if  deltaNodes < 0 or checkNode(iteration, iterations, deltaNodes, currentTemp):
+        if deltaNodes < 0 or checkNode(iteration, iterations, deltaNodes, currentTemp):
             costs.append(neighbourModel)
             hillClimberEnv = neighbourEnv
         
@@ -62,7 +71,7 @@ def makeHillClimberPakackage(env, model, costs):
     model.printResult()
 
     # make list of required items for returning to main
-    hillClimberBatteryList = [env, model, costs]
+    hillClimberBatteryList = [env, model]
     return hillClimberBatteryList
 
 def pickRandomNeighbour(inputBatteries):
