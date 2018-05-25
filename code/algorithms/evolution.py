@@ -412,7 +412,7 @@ def crossover(genomeX, genomeY, parentDominance, crossoverProb):
 
 # writes logs to a file that is specific for this search 
 def writeProgress(reportFileName, message):
-    filePathName = "..\\results\personalresults\\logs\\" + reportFileName
+    filePathName = "..\\results\logs\\" + reportFileName
 
     message = "-----------------\n" + message
 

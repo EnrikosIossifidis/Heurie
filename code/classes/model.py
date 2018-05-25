@@ -53,7 +53,7 @@ class Model:
             for house in bat.houses:
                 listOfhouses.append([house.idHouse, bat.idBattery])
         
-        # sort the list o\ houses on houseId
+        # sort the list of houses on houseId
         listOfhouses = sorted(listOfhouses, key=lambda tup: tup[0])
         connections = []
         connections.append(self.cost)
@@ -62,10 +62,11 @@ class Model:
         for house in listOfhouses:
             connections.append(house[1])
 
-        filename = "..\\results\personalresults\\" + "v" + str(env.village) + "_output.csv"
+        filename = "..\\results\\" + "v" + str(env.village) + "_output.csv"
         with open(filename,'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(connections)   
+            writer.writerow(connections)
+ 
 
     def calculateCosts(self, dt):
                     

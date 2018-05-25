@@ -37,17 +37,17 @@ def menu(choice, env):
         doHillClimberMoveBatteries(env)
 
 def doRandom(env, choice):
-    print("How many times do you want to do a random?")
+    print("How many times would you like to perform a random sampling?")
     iterations = int(input())
     costs = []
     for i in range(0, iterations):
         model = runRandom(env)
-        model.setName("Runrandom k-means env", i)
+        model.setName("random sampling", i)
         model.printResult()
         costs.append(model.cost)
         visVillage(env, model)
 
-    plotHistMultiple([costs], ["random"], choice, iterations, env.village)
+    plotHistMultiple([costs], ["random sampling"], choice, iterations, env.village)
 
 def doDepthFirst(env):
     model = depthFirstBnB(env)
