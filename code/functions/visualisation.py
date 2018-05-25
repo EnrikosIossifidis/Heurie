@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 def visVillage(env, model):
     
      # These are the "Tableau 20" colors as RGB.    
-    tableau20 = [(31, 119, 180), (255, 127, 14), (255, 187, 120),    
-              (152, 223, 138), (214, 39, 40), (255, 152, 150),    
+    tableau20 = [(31, 119, 180), (255, 127, 14),    
+              (152, 223, 138), (214, 39, 40),    
              (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),    
              (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),    
              (44, 160, 44), (188, 189, 34),(174, 199, 232), (0, 179, 226), (255,255,255), (24,24,24)]  
@@ -93,11 +93,11 @@ def visVillage(env, model):
 
     # Make sure your axis ticks are large enough to be easily read.  
     # You don't want your viewers squinting to read your plot.  
-    plt.xticks(fontsize=8, color=tableau20[19])  
-    plt.yticks(fontsize=8, color=tableau20[19])   
+    plt.xticks(fontsize=8, color=tableau20[17])  
+    plt.yticks(fontsize=8, color=tableau20[17])   
 
     # Make the title 
-    plt.title("Village " + str(env.village) + model.name, fontsize=10, color=tableau20[19])  
+    plt.title("Village " + str(env.village) + " - " + model.name + "\n Connections between houses and batteries" , fontsize=10, color=tableau20[17])  
             
     # plot the visualisation    
     plt.scatter(arrayBatteryX, arrayBatteryY, marker='8', c=arrayBatteryZ)

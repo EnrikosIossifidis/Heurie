@@ -1,11 +1,10 @@
-'''Randomly assigns houses to batteries, considering capacity restrictions - returns total cable distance (and which houses are assigned to which battery)'''
 import random
 import sys
 from classes.model import Model
 
 def runRandom(env):
 
-    # keep randomizing until legit solution is found
+    # keep randomizing until a model that meets constraints is found
     random = randomize(env)
     while random == False:
         random = randomize(env)
