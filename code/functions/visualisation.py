@@ -47,20 +47,7 @@ def visVillage(env, model):
             elif battery.idBattery==4:
                 plt.plot([item.x, env.batteries[3].x], [item.y, env.batteries[3].y], linewidth = 0.7, c=arrayBatteryZ[3], alpha=0.5)
             elif battery.idBattery==5:
-                plt.plot([item.x, env.batteries[4].x], [item.y, env.batteries[4].y], linewidth = 0.7, c=arrayBatteryZ[4], alpha=0.5)
-
-            
-            # # Actual cables over grid
-            # if battery.idBattery==1:
-            #     plt.plot([item.x, item.x, env.batteries[0].x], [item.y, env.batteries[0].y, env.batteries[0].y], linewidth = 0.7, c=arrayBatteryZ[0], alpha=0.5)
-            # elif battery.idBattery==2:
-            #     plt.plot([item.x, item.x, env.batteries[1].x], [item.y, env.batteries[1].y, env.batteries[1].y], linewidth = 0.7, c=arrayBatteryZ[1], alpha=0.5)
-            # elif battery.idBattery==3:
-            #     plt.plot([item.x, item.x, env.batteries[2].x], [item.y, env.batteries[2].y, env.batteries[2].y], linewidth = 0.7, c=arrayBatteryZ[2], alpha=0.5)
-            # elif battery.idBattery==4:
-            #     plt.plot([item.x, item.x, env.batteries[3].x], [item.y, env.batteries[3].y, env.batteries[3].y], linewidth = 0.7, c=arrayBatteryZ[3], alpha=0.5)
-            # elif battery.idBattery==5:
-            #     plt.plot([item.x, item.x, env.batteries[4].x], [item.y, env.batteries[4].y, env.batteries[4].y], linewidth = 0.7, c=arrayBatteryZ[4], alpha=0.5)
+                plt.plot([item.x, env.batteries[4].x], [item.y, env.batteries[4].y], linewidth = 0.7, c=arrayBatteryZ[4], alpha=0.5)         
 
     # put the houses in the right battery
     for idBattery in arrayZ:
@@ -80,19 +67,8 @@ def visVillage(env, model):
         arrayBatteryX.append(battery.x)
         arrayBatteryY.append(battery.y)  
 
-    # Remove the plot frame lines. They are ugly.    
-    ax = plt.subplot(111)    
-    ax.spines["top"].set_visible(False)    
-    ax.spines["bottom"].set_visible(True)    
-    ax.spines["right"].set_visible(False)    
-    ax.spines["left"].set_visible(True)   
-
-    # # # Set background color
-    # fig.patch.set_facecolor(tableau20[19]) 
-    # ax.set_facecolor(tableau20[19])
-
-    # Make sure your axis ticks are large enough to be easily read.  
-    # You don't want your viewers squinting to read your plot.  
+    # set axes
+    # ax = plt.subplot(111)    
     plt.xticks(fontsize=8, color=tableau20[17])  
     plt.yticks(fontsize=8, color=tableau20[17])   
 
@@ -102,7 +78,6 @@ def visVillage(env, model):
     # plot the visualisation    
     plt.scatter(arrayBatteryX, arrayBatteryY, marker='8', c=arrayBatteryZ)
     plt.scatter(arrayHouseX, arrayHouseY, marker='2', c=arrayHouseZ)
-    plt.axis()
 
     # save the model into a png file in the results map
     name = str(model.cost) + "_v" + str(env.village) + ".png"

@@ -16,9 +16,9 @@ try:
 except IndexError:
     sys.exit("Please use main.py with a village number. For example: main.py 1")
 
-print("What algorithm do you want to use? Type the number corresponding with the algorithm.")
-print("For getting the distribution of house to batteries - 1: Random, 2: Depth first with branch & Bound 3: Hill climber, 4: Simulated Annealing, 5:Evolution")
-print("For getting new locaties of the batteries - 6: K-means, 7: Hill climber on the batteries")
+print("What algorithm would you like to run? Type the number corresponding with the algorithm.\n")
+print("To make a model of the connection between houses and batteries: \n1: Random \n2: Depth first with branch & bound \n3: Stochastic hillclimber \n4: Simulated Annealing \n5: Evolution\n")
+print("To make a model that determines the locations of the batteries: \n6: K-means \n7: Stochastic hillclimber on the location of batteries")
 choice = int(input())
 
 menu(choice, env)
