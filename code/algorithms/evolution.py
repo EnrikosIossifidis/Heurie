@@ -11,9 +11,14 @@ import csv
 
 def evolution(env, maximumGenerations, populationSize, crossoversPerParent, matingPartners, parentDominance, mutationProbability, crossoverProbability):   
     
+<<<<<<< HEAD
     # check if population size is at least 2
     # at a small popSize there's a risk of killing every child
     if populationSize < 2:
+=======
+    # check if population size is at least 2 at a small popSize there's a risk of killing every child
+    if popSize < 2:
+>>>>>>> 1b3da31d15cf8a3603cad3af588c8de4b07b552f
         print("The population must at least have size 2")
     
     # create unique name for report
@@ -85,12 +90,10 @@ def searchForOptimum(population, bestModel, reportFileName, env):
     # take individual with lowest score
     possibleBestModel = sortedPopulation[0]
     
-    # if the model cost exceeds upper bound the next once will so too
-    # therefore do no update bestModel
+    # if the model cost exceeds upper bound the next once will so too therefore do no update bestModel
     if possibleBestModel.cost < bestModel.cost:
 
-        # if model's costs are lower:
-        # inform user
+        # if model's costs are lower, inform the user
         message = "New improvement detected: " + str(possibleBestModel.cost)
         writeProgress(reportFileName, message)
         possibleBestModel.write(env)
@@ -170,8 +173,8 @@ def createChildren(genomeX, genomeY, parentDominance, crossoverPerParent, env, m
 
 
 def makeViable(child, genesToCheck, env):
-    # conflict resolvement after fertilization, make child viable 
-    # check in advance is not necessary, since without conflict resolvement child is not viable
+
+    # conflict resolvement after fertilization, make child viable check in advance is not necessary, since without conflict resolvement child is not viable
     newChild = resolveConflict(child, genesToCheck, env)
 
     # if conflict resolvement does not lead to a viable child, try again up to 100 times
@@ -202,6 +205,7 @@ def resolveConflict(child, genesToCheck, env):
                 if house.idHouse == gene[0]:
 
                     temp_child.modelBatteries[gene[1]-1].houses.remove(house)
+                    
                     # save houseID
                     freeHouses.append(gene[0])
 
@@ -245,9 +249,8 @@ def resolveConflict(child, genesToCheck, env):
                     freeBatteries.pop(0)
 
             except IndexError:
+
                 # if solution doesn't fit, try again in different order
-                # solution not garantueed?
-                # print("total houses = {}".format(sum([len(x.houses) for x in temp_child.modelBatteries])))
                 return 
 
     return temp_child
@@ -386,10 +389,7 @@ def genomeToModel(genome, env):
                     corHouse = house
                     newModel.modelBatteries[gene[1]-1].houses.append(corHouse)
 
-        newModel.calculateCosts(env.distanceTable)
-
-        # print(sorted([x.idHouse for x in newModel.modelBatteries[0].houses], key=lambda x:x))
-   
+        newModel.calculateCosts(env.distanceTable)   
         return newModel
 
 def crossover(genomeX, genomeY, parentDominance, crossoverProb):
@@ -414,9 +414,14 @@ def crossover(genomeX, genomeY, parentDominance, crossoverProb):
             # add chosen gene to child         
             genomeChild.append(randomGene)              
 
+<<<<<<< HEAD
         # copy second half to child
         # add the house nrs that are not included yet 
         fromOtherParentTuples = []
+=======
+    # copy second half to child and add the house nrs that are not included yet 
+    fromOtherParentTuples = []
+>>>>>>> 1b3da31d15cf8a3603cad3af588c8de4b07b552f
 
         for housenr in fromOtherParent:            
             for geneY in genomeY:
