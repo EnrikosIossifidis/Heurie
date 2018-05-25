@@ -49,6 +49,6 @@ def plotHistMultiple(arrays, namesOfAlgorithms, number, iterations, village):
     plt.ylabel("frequency")
 
     # save plot
-    plt.savefig('../results/personalresults/' + name)
+    plt.savefig('../results/' + name)
 
 

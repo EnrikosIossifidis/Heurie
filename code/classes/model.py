@@ -62,12 +62,11 @@ class Model:
         for house in listOfhouses:
             connections.append(house[1])
 
-        filename = "..\\results\personalresults\\" + "v" + str(env.village) + "_output.csv"
+        filename = "..\\results\\" + "v" + str(env.village) + "_output.csv"
         with open(filename,'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(connections)
-
-   
+ 
 
     def calculateCosts(self, dt):
                     

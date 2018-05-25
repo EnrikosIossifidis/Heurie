@@ -42,7 +42,7 @@ def doRandom(env, choice):
     costs = []
     for i in range(0, iterations):
         model = runRandom(env)
-        model.setName("random sampling k-means env", i)
+        model.setName("random sampling", i)
         model.printResult()
         costs.append(model.cost)
         visVillage(env, model)
